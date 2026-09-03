@@ -153,6 +153,16 @@ body {
   50% { opacity: 0; }
 }
 
+/* ROC area sweep — the AUC shade draws itself in on reveal */
+@keyframes rocsweep {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.roc-area {
+  clip-path: inset(0 100% 0 0);
+  animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+
 /* ---------- scroll reveal ---------- */
 .reveal {
   opacity: 0;
