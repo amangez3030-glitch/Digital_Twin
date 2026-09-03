@@ -153,6 +153,13 @@ body {
   50% { opacity: 0; }
 }
 
+/* CV extractor — a scan bar sweeps the textarea while stages run */
+@keyframes scansweep {
+  from { transform: translateY(-40px); }
+  to { transform: translateY(420px); }
+}
+.scanline { animation: scansweep 0.9s linear infinite; }
+
 /* ROC area sweep — the AUC shade draws itself in on reveal */
 @keyframes rocsweep {
   from { clip-path: inset(0 100% 0 0); }

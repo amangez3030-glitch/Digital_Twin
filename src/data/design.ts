@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV J",
-  sheet: "10 / 10",
-  phase: "PHASE 10 — RECOMMENDATION ENGINE",
+  rev: "REV K",
+  sheet: "11 / 11",
+  phase: "PHASE 11 — NLP RESUME INTELLIGENCE",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -316,8 +316,8 @@ export const PHASES: Phase[] = [
   { n: 7, stage: "Models", name: "Student clustering", weeks: "done", deliverable: "REV G: k-selection protocol (elbow + silhouette + 10-seed stability), naming protocol, guardrails, live k-means methodology demo.", exit: "k earned by evidence; labels descriptive, never psychological. PASSED at gate G-7" },
   { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "done", deliverable: "REV H: frozen four-term scoring equation, 12 career weight vectors, live decomposition engine, explainability contract.", exit: "Every score argues for itself; missing evidence renormalized, never faked. PASSED at gate G-8" },
   { n: 9, stage: "Intelligence", name: "Skill-gap engine", weeks: "done", deliverable: "REV I: weighted-shortfall math, prerequisite DAG, payoff-per-effort ranking, live gap engine.", exit: "Gap table argues for its ordering; 'learn next' is derived, not asserted. PASSED at gate G-9" },
-  { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "now", deliverable: "REV J: frozen recommender rules, honest catalog (free/audit only), live sequence builder, why-not panel.", exit: "Every recommendation cites the shortfall that caused it; nothing recommended is paid or affiliated ← THIS DOCUMENT, awaiting G-10" },
-  { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "1.5 wk", deliverable: "spaCy + dictionary extractor; twin diff report.", exit: "Confidence + miss-list always rendered" },
+  { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "done", deliverable: "REV J: frozen recommender rules, honest catalog (free/audit only), live sequence builder, why-not panel.", exit: "Every recommendation cites its shortfall that caused it; nothing recommended is paid or affiliated. PASSED at gate G-10" },
+  { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "now", deliverable: "REV K: frozen extraction pipeline, alias vocabulary v1, confidence protocol with evidence, live deterministic extractor, twin-diff contract.", exit: "No silent guesses; confidence and miss-list always rendered ← THIS DOCUMENT, awaiting G-11" },
   { n: 12, stage: "Intelligence", name: "JD matching", weeks: "0.5 wk", deliverable: "Job description parsing + match/gap report.", exit: "“Match ≠ hiring” disclaimer enforced in UI" },
   { n: 13, stage: "Intelligence", name: "Explainable AI", weeks: "1 wk", deliverable: "SHAP integration; global + local explanation views.", exit: "Explanations reference actual feature values" },
   { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "1 wk", deliverable: "Versioned profile store, readiness indicators, progress views.", exit: "Formulas published in-app" },
@@ -370,7 +370,8 @@ export const REV_LEDGER = [
   { rev: "REV G", phase: "Phase 7 — Student Clustering", status: "APPROVED", tone: "green" as const, note: "Gate G-7 passed. Clustering stays descriptive: no personalities, no ranks, no destinies — protocol and naming rules signed." },
   { rev: "REV H", phase: "Phase 8 — Career Recommendation", status: "APPROVED", tone: "green" as const, note: "Gate G-8 passed. The score argues for itself: four named terms, renormalized absent evidence, careers ranked — never people." },
   { rev: "REV I", phase: "Phase 9 — Skill Gap Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-9 passed. 'Learn next' is derived from weighted shortfall and prerequisite gates — never asserted." },
-  { rev: "REV J", phase: "Phase 10 — Recommendation Engine", status: "ISSUED", tone: "amber" as const, note: "Recommender rules, honest catalog, live roadmap builder, why-not transparency. Awaiting gate G-10." },
+  { rev: "REV J", phase: "Phase 10 — Recommendation Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-10 passed. Nothing recommended is paid or affiliated; every plan cites its shortfall and its refusals." },
+  { rev: "REV K", phase: "Phase 11 — NLP Resume Intelligence", status: "ISSUED", tone: "amber" as const, note: "Frozen extraction pipeline, alias vocabulary v1, confidence protocol, live extractor, twin-diff contract. Awaiting gate G-11." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
