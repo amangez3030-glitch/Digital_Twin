@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV F",
-  sheet: "06 / 06",
-  phase: "PHASE 6 — ADVANCED ML",
+  rev: "REV G",
+  sheet: "07 / 07",
+  phase: "PHASE 7 — CLUSTERING",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -312,8 +312,8 @@ export const PHASES: Phase[] = [
   { n: 3, stage: "Foundations", name: "EDA", weeks: "done", deliverable: "REV C: the EDA contract — six work packages, the 33-attribute ledger, the leakage log, the balance protocol.", exit: "No silent column drops — pre-committed. PASSED at gate G-3" },
   { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "done", deliverable: "REV D: ColumnTransformer composition, fit discipline, leakage tests as code, twin input validator.", exit: "Leakage checklist executable; pipeline reproducible. PASSED at gate G-4" },
   { n: 5, stage: "Models", name: "Baseline models", weeks: "done", deliverable: "REV E: baseline harness code, blank results template, confusion-matrix lab, ROC worked example, evidence chain.", exit: "Harness + metric machinery on record. PASSED at gate G-5" },
-  { n: 6, stage: "Models", name: "Advanced ML", weeks: "now", deliverable: "REV F: candidate grid with conditional gates, nested-CV protocol, evidence rules R-1..R-5, model-card anatomy.", exit: "Winner rule defined before any run; null-result clause signed ← THIS DOCUMENT, awaiting G-6" },
-  { n: 7, stage: "Models", name: "Student clustering", weeks: "1 wk", deliverable: "K-Means personas, elbow + silhouette, PCA map.", exit: "k justified; labels descriptive only" },
+  { n: 6, stage: "Models", name: "Advanced ML", weeks: "done", deliverable: "REV F: candidate grid with conditional gates, nested-CV protocol, evidence rules R-1..R-5, model-card anatomy.", exit: "Selection machinery decided before Run 002; null-result clause signed. PASSED at gate G-6" },
+  { n: 7, stage: "Models", name: "Student clustering", weeks: "now", deliverable: "REV G: k-selection protocol (elbow + silhouette + 10-seed stability), naming protocol, guardrails, live k-means methodology demo.", exit: "k earned by evidence; labels descriptive, never psychological ← THIS DOCUMENT, awaiting G-7" },
   { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "1 wk", deliverable: "Hybrid compatibility engine + methodology doc.", exit: "Unit tests on fixed profiles pass" },
   { n: 9, stage: "Intelligence", name: "Skill-gap engine", weeks: "0.5 wk", deliverable: "Weighted gap tables and priority ranking.", exit: "Ranking invariants tested" },
   { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "1 wk", deliverable: "Learning + project + portfolio recommenders with justifications.", exit: "Every output carries a citable reason" },
@@ -366,7 +366,8 @@ export const REV_LEDGER = [
   { rev: "REV C", phase: "Phase 3 — EDA", status: "APPROVED", tone: "green" as const, note: "Gate G-3 passed. EDA contract accepted: 33-attribute ledger, leakage log, balance protocol." },
   { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "APPROVED", tone: "green" as const, note: "Gate G-4 passed. Pipeline composition accepted; leakage checklist executable; validator guards the twin." },
   { rev: "REV E", phase: "Phase 5 — Baseline Models", status: "APPROVED", tone: "green" as const, note: "Gate G-5 passed. Harness on record; results table blank by design; metric machinery taught by hand." },
-  { rev: "REV F", phase: "Phase 6 — Advanced ML", status: "ISSUED", tone: "amber" as const, note: "Candidate grid, nested-CV protocol, evidence rules, model-card anatomy. Awaiting gate G-6." },
+  { rev: "REV F", phase: "Phase 6 — Advanced ML", status: "APPROVED", tone: "green" as const, note: "Gate G-6 passed. Candidate grid and evidence rules frozen; the champion will be chosen by Run 002, not by fashion." },
+  { rev: "REV G", phase: "Phase 7 — Student Clustering", status: "ISSUED", tone: "amber" as const, note: "k-selection protocol, naming protocol, guardrails, live methodology demo. Awaiting gate G-7." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
