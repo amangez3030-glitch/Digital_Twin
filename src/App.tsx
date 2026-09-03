@@ -33,17 +33,23 @@ import {
   ExplainContractSection,
   GateG8Section,
 } from "./components/Phase8";
+import {
+  FormulationSection,
+  GapEngineSection,
+  PrereqGraphSection,
+  GateG9Section,
+} from "./components/Phase9";
 
-function Footer({ g8 }: { g8: boolean }) {
+function Footer({ g9 }: { g9: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 8 of 18. A decision-support
-            design document. No datasets were loaded and no models trained — but the compatibility
-            engine in §46 is real: drag a slider and watch a score argue for itself.
+            AI Digital Twin &amp; Career Intelligence System — Phase 9 of 18. A decision-support
+            design document. No datasets were loaded and no models trained — but the gap engine in
+            §51 is real: drag a skill and watch the engine re-derive what to learn next.
           </p>
         </div>
         <div>
@@ -57,8 +63,8 @@ function Footer({ g8 }: { g8: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g8 ? "text-green" : "text-amber"}`}>
-            {g8 ? "G-8 PASSED → PHASE 9 (SKILL GAP ENGINE)" : "G-8 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g9 ? "text-green" : "text-amber"}`}>
+            {g9 ? "G-9 PASSED → PHASE 10 (RECOMMENDATION ENGINE)" : "G-9 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -73,9 +79,9 @@ function Footer({ g8 }: { g8: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-7 are recorded as passed (REV A–G approved).
-  // G-8 is the live decision of this revision.
-  const [g8, setG8] = useState(false);
+  // Gates G-1 → G-8 are recorded as passed (REV A–H approved).
+  // G-9 is the live decision of this revision.
+  const [g9, setG9] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -84,8 +90,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g8={g8} />
-      <Opener g8={g8} />
+      <Header g9={g9} />
+      <Opener g9={g9} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -151,10 +157,16 @@ export default function App() {
         <LabSection />
         <WeightMatrixSection />
         <ExplainContractSection />
-        <GateG8Section g8={g8} onApprove={() => setG8(true)} />
+        <GateG8Section g8={true} onApprove={() => undefined} />
+
+        {/* Phase 9 — Skill Gap Engine */}
+        <FormulationSection />
+        <GapEngineSection />
+        <PrereqGraphSection />
+        <GateG9Section g9={g9} onApprove={() => setG9(true)} />
       </main>
 
-      <Footer g8={g8} />
+      <Footer g9={g9} />
     </div>
   );
 }
