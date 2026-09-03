@@ -369,7 +369,8 @@ export const REV_LEDGER = [
   { rev: "REV F", phase: "Phase 6 — Advanced ML", status: "APPROVED", tone: "green" as const, note: "Gate G-6 passed. Candidate grid and evidence rules frozen; the champion will be chosen by Run 002, not by fashion." },
   { rev: "REV G", phase: "Phase 7 — Student Clustering", status: "APPROVED", tone: "green" as const, note: "Gate G-7 passed. Clustering stays descriptive: no personalities, no ranks, no destinies — protocol and naming rules signed." },
   { rev: "REV H", phase: "Phase 8 — Career Recommendation", status: "APPROVED", tone: "green" as const, note: "Gate G-8 passed. The score argues for itself: four named terms, renormalized absent evidence, careers ranked — never people." },
-  { rev: "REV I", phase: "Phase 9 — Skill Gap Engine", status: "ISSUED", tone: "amber" as const, note: "Weighted shortfall, prerequisite DAG, payoff-per-effort ranking, live gap engine. Awaiting gate G-9." },
+  { rev: "REV I", phase: "Phase 9 — Skill Gap Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-9 passed. 'Learn next' is derived from weighted shortfall and prerequisite gates — never asserted." },
+  { rev: "REV J", phase: "Phase 10 — Recommendation Engine", status: "ISSUED", tone: "amber" as const, note: "Recommender rules, honest catalog, live roadmap builder, why-not transparency. Awaiting gate G-10." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
