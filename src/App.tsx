@@ -18,18 +18,18 @@ import { DataRegisterSection, ProxySection, SchemaSection } from "./components/P
 import { EDAProtocolSection, LedgerSection, LeakageSection, BalanceSection } from "./components/Phase3";
 import { PipelineSection, FitSection, TestsSection, ValidatorSection, GateG4Section } from "./components/Phase4";
 import { HarnessSection, ConfusionLabSection, RocSection, RunbookSection, GateG5Section } from "./components/Phase5";
+import { CandidatesSection, NestedCVSection, EvidenceSection, ModelCardSection, GateG6Section } from "./components/Phase6";
 
-function Footer({ g5 }: { g5: boolean }) {
+function Footer({ g6 }: { g6: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 5 of 18. A decision-support
+            AI Digital Twin &amp; Career Intelligence System — Phase 6 of 18. A decision-support
             design document. No datasets were loaded, no models trained, and no numbers invented in
-            the making of this page — which is why the Run 001 results table ships deliberately
-            empty.
+            the making of this page — the only illustrated values carry a HYPOTHETICAL stamp.
           </p>
         </div>
         <div>
@@ -43,8 +43,8 @@ function Footer({ g5 }: { g5: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g5 ? "text-green" : "text-amber"}`}>
-            {g5 ? "G-5 PASSED → PHASE 6 (ADVANCED ML)" : "G-5 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g6 ? "text-green" : "text-amber"}`}>
+            {g6 ? "G-6 PASSED → PHASE 7 (STUDENT CLUSTERING)" : "G-6 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -59,9 +59,9 @@ function Footer({ g5 }: { g5: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-4 are recorded as passed (REV A–D approved).
-  // G-5 is the live decision of this revision.
-  const [g5, setG5] = useState(false);
+  // Gates G-1 → G-5 are recorded as passed (REV A–E approved).
+  // G-6 is the live decision of this revision.
+  const [g6, setG6] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -70,8 +70,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g5={g5} />
-      <Opener g5={g5} />
+      <Header g6={g6} />
+      <Opener g6={g6} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -116,10 +116,17 @@ export default function App() {
         <ConfusionLabSection />
         <RocSection />
         <RunbookSection />
-        <GateG5Section g5={g5} onApprove={() => setG5(true)} />
+        <GateG5Section g5 onApprove={() => undefined} />
+
+        {/* Phase 6 — Advanced ML */}
+        <CandidatesSection />
+        <NestedCVSection />
+        <EvidenceSection />
+        <ModelCardSection />
+        <GateG6Section g6={g6} onApprove={() => setG6(true)} />
       </main>
 
-      <Footer g5={g5} />
+      <Footer g6={g6} />
     </div>
   );
 }

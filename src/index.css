@@ -163,6 +163,17 @@ body {
   animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
 
+/* Nested-CV scan — steps through the five outer folds */
+@keyframes nestscan {
+  0%, 17%   { transform: translateY(0); }
+  20%, 37%  { transform: translateY(56px); }
+  40%, 57%  { transform: translateY(112px); }
+  60%, 77%  { transform: translateY(168px); }
+  80%, 97%  { transform: translateY(224px); }
+  100%      { transform: translateY(0); }
+}
+.nest-scan { animation: nestscan 8s linear infinite; }
+
 /* ---------- scroll reveal ---------- */
 .reveal {
   opacity: 0;

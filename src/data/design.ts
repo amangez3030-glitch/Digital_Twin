@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV E",
-  sheet: "05 / 05",
-  phase: "PHASE 5 — BASELINE MODELS",
+  rev: "REV F",
+  sheet: "06 / 06",
+  phase: "PHASE 6 — ADVANCED ML",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -310,9 +310,9 @@ export const PHASES: Phase[] = [
   { n: 1, stage: "Foundations", name: "System Design", weeks: "done", deliverable: "This document: problem, objectives, features, architecture, schema, stack, risks, ethics.", exit: "Supervisor approval — PASSED at gate G-1" },
   { n: 2, stage: "Foundations", name: "Data", weeks: "done", deliverable: "REV B: ten dataset dossiers with verdicts, proxy-label policy, synthetic cohort protocol, schema-matching plan S1–S6.", exit: "Registered at gate G-2 — 4 adopted · 4 conditional · 2 rejected · 1 build" },
   { n: 3, stage: "Foundations", name: "EDA", weeks: "done", deliverable: "REV C: the EDA contract — six work packages, the 33-attribute ledger, the leakage log, the balance protocol.", exit: "No silent column drops — pre-committed. PASSED at gate G-3" },
-  { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "now", deliverable: "REV D: ColumnTransformer composition, fit discipline, leakage tests as code, twin input validator.", exit: "Leakage checklist executable; pipeline reproducible ← THIS DOCUMENT, awaiting G-4" },
-  { n: 5, stage: "Models", name: "Baseline models", weeks: "0.5 wk", deliverable: "LogReg + RF reference bars with full metrics.", exit: "Baselines reproducible from one command" },
-  { n: 6, stage: "Models", name: "Advanced ML", weeks: "1 wk", deliverable: "GB / XGBoost? / SVM / MLP comparison; nested CV for tuning.", exit: "Winner chosen by evidence table" },
+  { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "done", deliverable: "REV D: ColumnTransformer composition, fit discipline, leakage tests as code, twin input validator.", exit: "Leakage checklist executable; pipeline reproducible. PASSED at gate G-4" },
+  { n: 5, stage: "Models", name: "Baseline models", weeks: "done", deliverable: "REV E: baseline harness code, blank results template, confusion-matrix lab, ROC worked example, evidence chain.", exit: "Harness + metric machinery on record. PASSED at gate G-5" },
+  { n: 6, stage: "Models", name: "Advanced ML", weeks: "now", deliverable: "REV F: candidate grid with conditional gates, nested-CV protocol, evidence rules R-1..R-5, model-card anatomy.", exit: "Winner rule defined before any run; null-result clause signed ← THIS DOCUMENT, awaiting G-6" },
   { n: 7, stage: "Models", name: "Student clustering", weeks: "1 wk", deliverable: "K-Means personas, elbow + silhouette, PCA map.", exit: "k justified; labels descriptive only" },
   { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "1 wk", deliverable: "Hybrid compatibility engine + methodology doc.", exit: "Unit tests on fixed profiles pass" },
   { n: 9, stage: "Intelligence", name: "Skill-gap engine", weeks: "0.5 wk", deliverable: "Weighted gap tables and priority ranking.", exit: "Ranking invariants tested" },
@@ -365,7 +365,8 @@ export const REV_LEDGER = [
   { rev: "REV B", phase: "Phase 2 — Data", status: "APPROVED", tone: "green" as const, note: "Gate G-2 passed. Ten dataset verdicts on record; proxy policy signed; schema plan S1–S6 binding." },
   { rev: "REV C", phase: "Phase 3 — EDA", status: "APPROVED", tone: "green" as const, note: "Gate G-3 passed. EDA contract accepted: 33-attribute ledger, leakage log, balance protocol." },
   { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "APPROVED", tone: "green" as const, note: "Gate G-4 passed. Pipeline composition accepted; leakage checklist executable; validator guards the twin." },
-  { rev: "REV E", phase: "Phase 5 — Baseline Models", status: "ISSUED", tone: "amber" as const, note: "Baseline harness code, honest blank results template, metric machinery. Awaiting gate G-5." },
+  { rev: "REV E", phase: "Phase 5 — Baseline Models", status: "APPROVED", tone: "green" as const, note: "Gate G-5 passed. Harness on record; results table blank by design; metric machinery taught by hand." },
+  { rev: "REV F", phase: "Phase 6 — Advanced ML", status: "ISSUED", tone: "amber" as const, note: "Candidate grid, nested-CV protocol, evidence rules, model-card anatomy. Awaiting gate G-6." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
