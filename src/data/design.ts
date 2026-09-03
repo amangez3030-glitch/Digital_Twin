@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV C",
-  sheet: "03 / 03",
-  phase: "PHASE 3 — EDA",
+  rev: "REV D",
+  sheet: "04 / 04",
+  phase: "PHASE 4 — PREPROCESSING",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -309,8 +309,8 @@ export interface Phase {
 export const PHASES: Phase[] = [
   { n: 1, stage: "Foundations", name: "System Design", weeks: "done", deliverable: "This document: problem, objectives, features, architecture, schema, stack, risks, ethics.", exit: "Supervisor approval — PASSED at gate G-1" },
   { n: 2, stage: "Foundations", name: "Data", weeks: "done", deliverable: "REV B: ten dataset dossiers with verdicts, proxy-label policy, synthetic cohort protocol, schema-matching plan S1–S6.", exit: "Registered at gate G-2 — 4 adopted · 4 conditional · 2 rejected · 1 build" },
-  { n: 3, stage: "Foundations", name: "EDA", weeks: "now", deliverable: "REV C: the EDA contract — six work packages, the 33-attribute ledger, the leakage log, the balance protocol.", exit: "No silent column drops — pre-committed ← THIS DOCUMENT, awaiting G-3" },
-  { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "0.5 wk", deliverable: "Reusable pipelines (impute, scale, encode) fitted inside CV only.", exit: "Leakage checklist signed off" },
+  { n: 3, stage: "Foundations", name: "EDA", weeks: "done", deliverable: "REV C: the EDA contract — six work packages, the 33-attribute ledger, the leakage log, the balance protocol.", exit: "No silent column drops — pre-committed. PASSED at gate G-3" },
+  { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "now", deliverable: "REV D: ColumnTransformer composition, fit discipline, leakage tests as code, twin input validator.", exit: "Leakage checklist executable; pipeline reproducible ← THIS DOCUMENT, awaiting G-4" },
   { n: 5, stage: "Models", name: "Baseline models", weeks: "0.5 wk", deliverable: "LogReg + RF reference bars with full metrics.", exit: "Baselines reproducible from one command" },
   { n: 6, stage: "Models", name: "Advanced ML", weeks: "1 wk", deliverable: "GB / XGBoost? / SVM / MLP comparison; nested CV for tuning.", exit: "Winner chosen by evidence table" },
   { n: 7, stage: "Models", name: "Student clustering", weeks: "1 wk", deliverable: "K-Means personas, elbow + silhouette, PCA map.", exit: "k justified; labels descriptive only" },
@@ -363,7 +363,8 @@ export const TWIN_NODES: TwinNode[] = [
 export const REV_LEDGER = [
   { rev: "REV A", phase: "Phase 1 — System Design", status: "APPROVED", tone: "green" as const, note: "Gate G-1 passed. Design frozen; feature scope locked; risk register accepted." },
   { rev: "REV B", phase: "Phase 2 — Data", status: "APPROVED", tone: "green" as const, note: "Gate G-2 passed. Ten dataset verdicts on record; proxy policy signed; schema plan S1–S6 binding." },
-  { rev: "REV C", phase: "Phase 3 — EDA", status: "ISSUED", tone: "amber" as const, note: "The EDA contract: work packages, 33-attribute ledger, leakage log, balance protocol. Awaiting gate G-3." },
+  { rev: "REV C", phase: "Phase 3 — EDA", status: "APPROVED", tone: "green" as const, note: "Gate G-3 passed. EDA contract accepted: 33-attribute ledger, leakage log, balance protocol." },
+  { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "ISSUED", tone: "amber" as const, note: "ColumnTransformer composition, fit discipline, leakage tests, input validator. Awaiting gate G-4." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
@@ -752,3 +753,249 @@ export const BALANCE_PROTOCOL = {
 
 export const EDA_EXIT =
   "14 features in · 16 documented exclusions · 2 leakage-flagged · 1 target. Every column of the primary dataset has a disposition, in writing, before load. The notebook executes this contract; it does not renegotiate it.";
+
+/* ============================================================
+   PHASE 4 · Preprocessing — the code, written before the data
+   Preprocessing is the one stage that can be fully specified and
+   tested without a single row loaded. This revision ships the real
+   ColumnTransformer, the fit-discipline rules, the leakage checklist
+   as executable tests, and the validator that guards twin writes.
+   ============================================================ */
+
+export const P4_INTRO =
+  "Preprocessing is where leakage is either prevented or smuggled in — and it is the one stage that can be written, reviewed and tested before a single row is loaded. So this revision does exactly that: the ColumnTransformer composition is final code, not a sketch; the fit-discipline is a rule that a test enforces; and the leakage checklist from §22 is now executable. When the notebook finally runs, it wires this module to data — it does not redesign it.";
+
+/* ---------- the actual ColumnTransformer ---------- */
+export const P4_TRANSFORMER_CODE = `from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+
+# The 14 KEEP columns from the §21 ledger — nothing else enters.
+BINARY  = ["school", "schoolsup", "famsup", "paid",
+           "activities", "higher", "internet"]
+NOMINAL = ["reason"]                                  # 4 classes
+ORDINAL = ["traveltime", "studytime",
+           "freetime", "goout"]
+NUMERIC = ["failures", "absences"]
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ("bin", OneHotEncoder(drop="first",
+                              handle_unknown="ignore"), BINARY),
+        ("nom", OneHotEncoder(drop="first",
+                              handle_unknown="ignore"), NOMINAL),
+        ("ord", OrdinalEncoder(categories=[[1, 2, 3, 4],
+                                           [1, 2, 3, 4],
+                                           [1, 2, 3, 4, 5],
+                                           [1, 2, 3, 4, 5]]), ORDINAL),
+        ("num", Pipeline([
+            ("imp", SimpleImputer(strategy="median")),
+            ("sc",  StandardScaler()),
+        ]), NUMERIC),
+    ],
+    remainder="drop",   # <- the 16 EXCLUDE, 2 LEAK and 1 TARGET
+)                       #    never reach a model. Enforced, not hoped.`;
+
+/* ---------- interactive transformer tree ---------- */
+export interface TxStep { code: string; why: string }
+export interface TxColumn { name: string; type: string; range: string; why: string }
+export interface TxGroup {
+  id: string;
+  name: string;
+  transformer: string;
+  accent: string;
+  columns: TxColumn[];
+  chain: TxStep[];
+  note: string;
+}
+
+export const P4_GROUPS: TxGroup[] = [
+  {
+    id: "bin",
+    name: "Binary flags",
+    transformer: 'OneHotEncoder(drop="first", handle_unknown="ignore")',
+    accent: "#6be1ff",
+    columns: [
+      { name: "school", type: "BIN", range: "GP / MS", why: "Which school — a control variable for cohort effects." },
+      { name: "schoolsup", type: "BIN", range: "yes / no", why: "Extra educational support — a resource signal." },
+      { name: "famsup", type: "BIN", range: "yes / no", why: "Family study support — a support mechanism, not sensitive." },
+      { name: "paid", type: "BIN", range: "yes / no", why: "Extra paid classes — a resource feature." },
+      { name: "activities", type: "BIN", range: "yes / no", why: "Extracurriculars — behavioral engagement." },
+      { name: "higher", type: "BIN", range: "yes / no", why: "Higher-education aspiration — a strong legitimate signal." },
+      { name: "internet", type: "BIN", range: "yes / no", why: "Resource access — kept, flagged for supervisor review at G-3." },
+    ],
+    chain: [
+      { code: "OneHotEncoder", why: "Nominal binary values become indicator columns." },
+      { code: 'drop="first"', why: "Drops one column per feature to avoid the dummy-variable trap (perfect collinearity)." },
+      { code: 'handle_unknown="ignore"', why: "Unseen categories at predict time encode as all-zero instead of crashing the twin." },
+    ],
+    note: "7 features → 7 one-hot columns. Because each is already binary, one-hotting is effectively a 0/1 re-encoding; drop='first' keeps the design matrix full-rank.",
+  },
+  {
+    id: "nom",
+    name: "Nominal category",
+    transformer: 'OneHotEncoder(drop="first", handle_unknown="ignore")',
+    accent: "#7ce7a5",
+    columns: [
+      { name: "reason", type: "NOM", range: "course / home / reputation / other", why: "Why the student chose this school — a motivation signal." },
+    ],
+    chain: [
+      { code: "OneHotEncoder", why: "4 unordered classes → 4 indicator columns." },
+      { code: 'drop="first"', why: "Leaves 3 columns; the dropped one is the implicit baseline." },
+      { code: 'handle_unknown="ignore"', why: "Graceful on any future or malformed value." },
+    ],
+    note: "1 feature → 3 one-hot columns. Ordinal encoding would be wrong here: 'course' is not quantitatively greater than 'home'.",
+  },
+  {
+    id: "ord",
+    name: "Ordinal scales",
+    transformer: "OrdinalEncoder(categories=[[1,2,3,4],[1,2,3,4],[1,2,3,4,5],[1,2,3,4,5]])",
+    accent: "#ffc266",
+    columns: [
+      { name: "traveltime", type: "ORD", range: "1 – 4", why: "Commute cost — study-context feature." },
+      { name: "studytime", type: "ORD", range: "1 – 4", why: "Weekly study time — a core twin behavioral feature." },
+      { name: "freetime", type: "ORD", range: "1 – 5", why: "Free time after school — behavioral feature." },
+      { name: "goout", type: "ORD", range: "1 – 5", why: "Social activity — behavioral feature." },
+    ],
+    chain: [
+      { code: "OrdinalEncoder", why: "Preserves the inherent order (1 < 2 < 3 < 4 < 5)." },
+      { code: "fixed categories", why: "Categories pinned to the documented scales so the encoding cannot drift if a value is missing." },
+      { code: "interval caveat", why: "Treated as ordered-numeric for trees; the EDA report notes the intervals are not proven equal." },
+    ],
+    note: "4 features → 4 ordered-numeric columns. One-hotting would discard the order; treating as raw continuous would overclaim equal spacing. Trees are robust to either, which is why the caveat is a note, not a blocker.",
+  },
+  {
+    id: "num",
+    name: "Numeric counts",
+    transformer: "Pipeline([SimpleImputer(median), StandardScaler])",
+    accent: "#9db8ff",
+    columns: [
+      { name: "failures", type: "NUM", range: "0 – 3+", why: "Previous years' failures — predictive, not current-year leakage." },
+      { name: "absences", type: "NUM", range: "0 – 93", why: "Attendance — the prime early-warning behavioral feature." },
+    ],
+    chain: [
+      { code: "SimpleImputer(median)", why: "Median is robust to the skew in absences (a few students at 90+)." },
+      { code: "StandardScaler", why: "Puts failures (0–3) and absences (0–93) on comparable scale for linear models and distance-based ones." },
+      { code: "log1p(absences)", why: "Flagged as a sensitivity-analysis variant, given the right skew — reported, not silently swapped." },
+    ],
+    note: "2 features → 2 scaled columns. The imputer is fit on the training fold only (see §26); the scaler uses that fold's mean/std.",
+  },
+];
+
+export const P4_TARGET_CODE = `# Target — computed from G3 alone. G1, G2, G3 are then dropped
+# from the feature frame. The §22 leakage log is the authority.
+y = (df["G3"] < 10).astype(int)          # fail := G3 < 10
+X = df.drop(columns=["G1", "G2", "G3"])  # outcome never a feature
+X = X[KEEP_14]                            # the signed §21 ledger`;
+
+/* ---------- fit discipline ---------- */
+export const P4_FIT = {
+  rule: "Fit on the training fold. Transform everything with those fold statistics. Never refit on validation or test.",
+  points: [
+    { title: "Imputer & scaler are part of the pipeline", body: "They sit inside the same Pipeline as the model, so cross-validation refits them on each fold's training split. Their statistics never see held-out rows." },
+    { title: "CV refits per fold", body: "In stratified 5-fold CV the preprocessor is fit 5 times — once per fold — each on that fold's training portion only. Mean/std/medians are therefore fold-local." },
+    { title: "Test is touched once", body: "The held-out 20% is transformed exactly once, using the final pipeline fit on the full training set, after every modeling choice is frozen." },
+    { title: "Artifacts are pinned", body: "The fitted preprocessor + model ship as joblib with a manifest: training-data hash, CV metrics, timestamp and version. The prediction log references them." },
+  ],
+  cvFlow: ["TRAIN fold", "fit preprocessor", "fit model", "transform VAL", "score"],
+};
+
+/* ---------- leakage tests ---------- */
+export interface P4Test { id: string; name: string; asserts: string; code: string }
+
+export const P4_TESTS: P4Test[] = [
+  {
+    id: "T-1",
+    name: "target_not_in_features",
+    asserts: "G1, G2 and G3 are absent from the feature frame handed to any model.",
+    code: `def test_target_not_in_features(X):
+    leaked = {"G1", "G2", "G3"} & set(X.columns)
+    assert not leaked, f"outcome columns in features: {leaked}"`,
+  },
+  {
+    id: "T-2",
+    name: "sensitive_not_in_features",
+    asserts: "None of the 16 EXCLUDE columns (§21) appear in the feature frame.",
+    code: `EXCLUDE = {"sex", "age", "address", "famsize", "Pstatus", "Medu",
+           "Fedu", "Mjob", "Fjob", "guardian", "nursery", "romantic",
+           "famrel", "Dalc", "Walc", "health"}
+
+def test_sensitive_not_in_features(X):
+    assert not (EXCLUDE & set(X.columns)), "sensitive attribute leaked"`,
+  },
+  {
+    id: "T-3",
+    name: "imputer_fit_on_train_only",
+    asserts: "Imputer statistics are computed from the training split alone.",
+    code: `def test_imputer_fit_on_train_only(X_train, X_test, pipeline):
+    pipeline.fit(X_train, y_train)
+    imp = pipeline.named_steps["pre"].named_transformers_["num"]
+    # statistics_ must reflect X_train only — recompute & compare
+    expected = np.nanmedian(X_train[NUMERIC], axis=0)
+    np.testing.assert_allclose(imp.named_steps["imp"].statistics_,
+                               expected)`,
+  },
+  {
+    id: "T-4",
+    name: "cv_is_stratified",
+    asserts: "Every CV fold preserves the pass/fail class ratio within tolerance.",
+    code: `def test_cv_is_stratified(y, cv):
+    overall = y.mean()
+    for tr, va in cv.split(X, y):
+        assert abs(y[tr].mean() - overall) < 0.03`,
+  },
+  {
+    id: "T-5",
+    name: "ordinal_categories_pinned",
+    asserts: "Ordinal encoding matches the documented 1–4 / 1–5 scales exactly.",
+    code: `def test_ordinal_categories_pinned(pre):
+    enc = pre.named_transformers_["ord"]
+    assert enc.categories_ == [[1,2,3,4], [1,2,3,4],
+                               [1,2,3,4,5], [1,2,3,4,5]]`,
+  },
+  {
+    id: "T-6",
+    name: "test_touched_once",
+    asserts: "The held-out test set is transformed exactly once, after all choices are frozen.",
+    code: `def test_test_touched_once(counter):
+    # counter increments on every transform(X_test)
+    assert counter.value == 1, "test set used more than once"`,
+  },
+  {
+    id: "T-7",
+    name: "twin_writes_validated",
+    asserts: "Every write to the Digital Twin passes the §28 validator before it lands.",
+    code: `def test_twin_writes_validated(record):
+    validate_twin_write(record)   # raises on any rule breach`,
+  },
+];
+
+/* ---------- twin input validator ---------- */
+export interface ValRule { field: string; rule: string; type: string }
+export const P4_VALIDATOR_RULES: ValRule[] = [
+  { field: "skill.level_0_100", rule: "integer in [0, 100]", type: "range" },
+  { field: "skill.canonical_name", rule: "present in skills.json vocabulary", type: "vocab" },
+  { field: "skill.source", rule: "one of {self, extracted, verified} — required", type: "enum" },
+  { field: "attendance.attended", rule: "0 ≤ attended ≤ total", type: "range" },
+  { field: "grade.score", rule: "real in [0, 20]", type: "range" },
+  { field: "record.updated_at", rule: "valid ISO timestamp — required", type: "format" },
+  { field: "record.student_id", rule: "references an existing student row", type: "fk" },
+  { field: "project.difficulty", rule: "integer in [1, 5]", type: "range" },
+];
+
+export const P4_VALIDATOR_NOTE =
+  "The same validator guards two doors: the training-data intake and the Digital Twin's write path. One rule set, two enforcement points — so the twin can never store a value the models were never allowed to see, and a malformed record fails loudly at the boundary instead of corrupting the timeline.";
+
+/* ---------- artifacts & deliverables ---------- */
+export const P4_ARTIFACTS = [
+  { f: "preprocessor.joblib", what: "Fitted ColumnTransformer — pinned to a training-data hash" },
+  { f: "model.joblib", what: "Selected model fitted inside CV discipline" },
+  { f: "manifest.json", what: "Data hash, CV metrics, timestamp, version — referenced by the prediction log" },
+  { f: "src/preprocessing/pipeline.py", what: "The ColumnTransformer + target engineering above, as importable code" },
+  { f: "src/preprocessing/validate.py", what: "validate_twin_write() — the §28 rule set" },
+  { f: "tests/test_preprocessing.py", what: "The seven leakage tests, runnable with one pytest command" },
+];
+
+export const P4_EXIT =
+  "The preprocessing module is final code with an executable leakage checklist — not a plan. When data arrives, it is wired in unchanged; any deviation requires a documented revision, not an inline edit. That is the whole point of writing it first.";

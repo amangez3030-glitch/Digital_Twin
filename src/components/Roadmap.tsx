@@ -10,7 +10,7 @@ const STAGE_COLOR: Record<string, string> = {
 };
 
 /* ---------- 14 · Roadmap ---------- */
-export function RoadmapSection({ g2 }: { g2: boolean }) {
+export function RoadmapSection() {
   return (
     <Section
       id="s14"
@@ -35,9 +35,9 @@ export function RoadmapSection({ g2 }: { g2: boolean }) {
             </Reveal>
             <div className="ml-[5px] border-l border-line pl-6 sm:ml-[9px] sm:pl-8">
               {phases.map((p, i) => {
-                const done = p.n <= 2;
-                const isCurrent = p.n === 3;
-                const locked = p.n > 3;
+                const done = p.n <= 3;
+                const isCurrent = p.n === 4;
+                const locked = p.n > 4;
                 return (
                   <Reveal key={p.n} delay={i * 60}>
                     <div className="relative mb-3">

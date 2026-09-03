@@ -16,18 +16,19 @@ import RiskSection from "./components/Risks";
 import { RoadmapSection, GateG1Section, GateG2Section, GateG3Section } from "./components/Roadmap";
 import { DataRegisterSection, ProxySection, SchemaSection } from "./components/Phase2";
 import { EDAProtocolSection, LedgerSection, LeakageSection, BalanceSection } from "./components/Phase3";
+import { PipelineSection, FitSection, TestsSection, ValidatorSection, GateG4Section } from "./components/Phase4";
 
-function Footer({ g3 }: { g3: boolean }) {
+function Footer({ g4 }: { g4: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phases 1–2 approved, Phase 3 issued.
-            A decision-support design document. No datasets were loaded, no models trained, and no
-            numbers invented in the making of this page — the EDA ledger pre-commits its verdicts
-            instead.
+            AI Digital Twin &amp; Career Intelligence System — Phase 4 of 18. A decision-support
+            design document. No datasets were loaded, no models trained, and no numbers invented in
+            the making of this page — the preprocessing shipped here is code, written first on
+            purpose.
           </p>
         </div>
         <div>
@@ -37,13 +38,12 @@ function Footer({ g3 }: { g3: boolean }) {
             <li><span className="text-rose">02</span> never hide an error or a failed baseline</li>
             <li><span className="text-rose">03</span> smaller working feature &gt; fake advanced one</li>
             <li><span className="text-rose">04</span> say what cannot be done — and the valid alternative</li>
-            <li><span className="text-rose">05</span> no silent column drops — the ledger is auditable</li>
           </ul>
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g3 ? "text-green" : "text-amber"}`}>
-            {g3 ? "G-3 PASSED → PHASE 4 (PREPROCESSING)" : "G-1 ✓ · G-2 ✓ · G-3 PENDING APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g4 ? "text-green" : "text-amber"}`}>
+            {g4 ? "G-4 PASSED → PHASE 5 (BASELINE MODELS)" : "G-4 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -58,8 +58,9 @@ function Footer({ g3 }: { g3: boolean }) {
 }
 
 export default function App() {
-  const g2 = true; // Phase 2 approved — recorded at gate G-2 (REV B)
-  const [g3, setG3] = useState(false);
+  // Gates G-1 and G-2 are recorded as passed (REV A & REV B approved).
+  // G-3 is recorded as passed (REV C approved). G-4 is the live decision.
+  const [g4, setG4] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -68,11 +69,11 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g3={g3} />
-      <Opener g3={g3} />
+      <Header g4={g4} />
+      <Opener g4={g4} />
 
       <main>
-        {/* REV A — Phase 1 · System Design */}
+        {/* Phase 1 — System Design */}
         <ProblemSection />
         <ObjectivesSection />
         <UsersSection />
@@ -86,24 +87,31 @@ export default function App() {
         <RiskSection />
         <EthicsSection />
         <DiffSection />
-        <RoadmapSection g2={g2} />
+        <RoadmapSection />
         <GateG1Section />
 
-        {/* REV B — Phase 2 · Data */}
+        {/* Phase 2 — Data */}
         <DataRegisterSection />
         <ProxySection />
         <SchemaSection />
-        <GateG2Section g2={g2} onApprove={() => undefined} />
+        <GateG2Section g2 onApprove={() => undefined} />
 
-        {/* REV C — Phase 3 · EDA */}
+        {/* Phase 3 — EDA */}
         <EDAProtocolSection />
         <LedgerSection />
         <LeakageSection />
         <BalanceSection />
-        <GateG3Section g3={g3} onApprove={() => setG3(true)} />
+        <GateG3Section g3 onApprove={() => undefined} />
+
+        {/* Phase 4 — Preprocessing */}
+        <PipelineSection />
+        <FitSection />
+        <TestsSection />
+        <ValidatorSection />
+        <GateG4Section g4={g4} onApprove={() => setG4(true)} />
       </main>
 
-      <Footer g3={g3} />
+      <Footer g4={g4} />
     </div>
   );
 }
