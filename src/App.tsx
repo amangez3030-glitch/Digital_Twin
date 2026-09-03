@@ -39,17 +39,23 @@ import {
   PrereqGraphSection,
   GateG9Section,
 } from "./components/Phase9";
+import {
+  CatalogSection,
+  RoadmapBuilderSection,
+  WhyNotSection,
+  GateG10Section,
+} from "./components/Phase10";
 
-function Footer({ g9 }: { g9: boolean }) {
+function Footer({ g10 }: { g10: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 9 of 18. A decision-support
-            design document. No datasets were loaded and no models trained — but the gap engine in
-            §51 is real: drag a skill and watch the engine re-derive what to learn next.
+            AI Digital Twin &amp; Career Intelligence System — Phase 10 of 18. A decision-support
+            design document. Nothing here was bought, sponsored or invented: the catalog is free,
+            the roadmap builder is a pure function of the gap math, and every "why not" cites its rule.
           </p>
         </div>
         <div>
@@ -63,8 +69,8 @@ function Footer({ g9 }: { g9: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g9 ? "text-green" : "text-amber"}`}>
-            {g9 ? "G-9 PASSED → PHASE 10 (RECOMMENDATION ENGINE)" : "G-9 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g10 ? "text-green" : "text-amber"}`}>
+            {g10 ? "G-10 PASSED → PHASE 11 (NLP RESUME INTELLIGENCE)" : "G-10 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -79,9 +85,9 @@ function Footer({ g9 }: { g9: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-8 are recorded as passed (REV A–H approved).
-  // G-9 is the live decision of this revision.
-  const [g9, setG9] = useState(false);
+  // Gates G-1 → G-9 are recorded as passed (REV A–I approved).
+  // G-10 is the live decision of this revision.
+  const [g10, setG10] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -90,8 +96,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g9={g9} />
-      <Opener g9={g9} />
+      <Header g10={g10} />
+      <Opener g10={g10} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -163,10 +169,16 @@ export default function App() {
         <FormulationSection />
         <GapEngineSection />
         <PrereqGraphSection />
-        <GateG9Section g9={g9} onApprove={() => setG9(true)} />
+        <GateG9Section g9={true} onApprove={() => undefined} />
+
+        {/* Phase 10 — Recommendation Engine */}
+        <CatalogSection />
+        <RoadmapBuilderSection />
+        <WhyNotSection />
+        <GateG10Section g10={g10} onApprove={() => setG10(true)} />
       </main>
 
-      <Footer g9={g9} />
+      <Footer g10={g10} />
     </div>
   );
 }
