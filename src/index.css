@@ -139,6 +139,16 @@ body {
 .blink {
   animation: blinkc 1.1s step-end infinite;
 }
+/* animated flow arrow (schema pipeline) */
+.flow-dash {
+  display: inline-block;
+  animation: flowpulse 1.6s ease-in-out infinite;
+}
+@keyframes flowpulse {
+  0%, 100% { opacity: 0.35; transform: translateX(-3px); }
+  50% { opacity: 1; transform: translateX(3px); }
+}
+
 @keyframes blinkc {
   50% { opacity: 0; }
 }

@@ -1,4 +1,4 @@
-import { DOC_META, STATS } from "../data/design";
+import { DOC_META, STATS, REV_LEDGER } from "../data/design";
 import { useCountUp, useReveal } from "../hooks";
 import Schematic from "./Schematic";
 
@@ -20,7 +20,7 @@ function Stat({ value, label, suffix, delay }: { value: number; label: string; s
   );
 }
 
-export default function Opener({ approved }: { approved: boolean }) {
+export default function Opener({ g2 }: { g2: boolean }) {
   return (
     <header className="relative mx-auto w-full max-w-6xl px-5 pt-28 sm:px-8 md:pt-36">
       {/* breadcrumb strip */}
@@ -33,10 +33,10 @@ export default function Opener({ approved }: { approved: boolean }) {
         </p>
         <span
           className={`mono-label ml-auto border px-2.5 py-1 text-[9.5px] ${
-            approved ? "border-green/50 text-green" : "border-amber/50 text-amber"
+            g2 ? "border-green/50 text-green" : "border-amber/50 text-amber"
           }`}
         >
-          {approved ? "STATUS: APPROVED ✓" : "STATUS: AWAITING APPROVAL"}
+          {g2 ? "G-2 PASSED ✓" : "G-1 PASSED · G-2 PENDING"}
         </span>
       </div>
 
@@ -92,12 +92,44 @@ export default function Opener({ approved }: { approved: boolean }) {
           ["REV", DOC_META.rev],
           ["SCALE", DOC_META.scale],
           ["SHEET", DOC_META.sheet],
-          ["PHASE", "1 / 18"],
+          ["PHASE", "2 / 18"],
           ["DRAWN BY", "ML STUDENT"],
         ].map(([k, v]) => (
           <div key={k} className="-ml-px -mt-px border border-line bg-panel/70 px-4 py-3">
             <p className="mono-label text-[8.5px] text-faint">{k}</p>
             <p className="mt-1 font-mono text-[11.5px] font-medium text-ink">{v}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* revision ledger */}
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {REV_LEDGER.map((r) => (
+          <div
+            key={r.rev}
+            className="panel flex items-start gap-4 border-l-2 p-4"
+            style={{ borderLeftColor: r.tone === "green" ? "#7ce7a5" : "#ffc266" }}
+          >
+            <span
+              className={`mono-label mt-[2px] shrink-0 border px-2 py-[3px] text-[9px] ${
+                r.tone === "green" ? "border-green/50 text-green" : "border-amber/50 text-amber"
+              }`}
+            >
+              {r.rev}
+            </span>
+            <div>
+              <p className="display-head text-[14px] text-ink">
+                {r.phase}
+                <span
+                  className={`mono-label ml-2 text-[8.5px] ${
+                    r.tone === "green" ? "text-green" : "text-amber"
+                  }`}
+                >
+                  {r.status}
+                </span>
+              </p>
+              <p className="mt-1 text-[12px] leading-relaxed text-faint">{r.note}</p>
+            </div>
           </div>
         ))}
       </div>

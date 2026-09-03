@@ -16,10 +16,14 @@ export const SECTIONS: { id: string; n: string; label: string }[] = [
   { id: "s12", n: "12", label: "Ethics" },
   { id: "s13", n: "13", label: "Differentiation" },
   { id: "s14", n: "14", label: "Roadmap" },
-  { id: "s15", n: "15", label: "Approval" },
+  { id: "s15", n: "15", label: "Gate G-1" },
+  { id: "s16", n: "16", label: "Data Register" },
+  { id: "s17", n: "17", label: "Proxy Policy" },
+  { id: "s18", n: "18", label: "Schema Match" },
+  { id: "s19", n: "19", label: "Gate G-2" },
 ];
 
-export default function Header({ approved }: { approved: boolean }) {
+export default function Header({ g2 }: { g2: boolean }) {
   const active = useScrollSpy(SECTIONS.map((s) => s.id));
 
   return (
@@ -40,10 +44,10 @@ export default function Header({ approved }: { approved: boolean }) {
           <span className="mono-label hidden text-faint md:block">{DOC_META.docNo} · {DOC_META.rev}</span>
           <span
             className={`mono-label ml-auto border px-2 py-[3px] text-[9px] ${
-              approved ? "border-green/50 text-green" : "border-amber/50 text-amber"
+              g2 ? "border-green/50 text-green" : "border-amber/50 text-amber"
             }`}
           >
-            {approved ? "PHASE 1 APPROVED" : "PHASE 1 · PENDING"}
+            {g2 ? "PHASE 2 APPROVED" : "PHASE 2 · ACTIVE"}
           </span>
         </div>
       </div>
