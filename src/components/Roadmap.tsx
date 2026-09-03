@@ -35,9 +35,9 @@ export function RoadmapSection({ g2 }: { g2: boolean }) {
             </Reveal>
             <div className="ml-[5px] border-l border-line pl-6 sm:ml-[9px] sm:pl-8">
               {phases.map((p, i) => {
-                const done = p.n === 1;
-                const isCurrent = p.n === 2;
-                const locked = p.n > 2 && !g2;
+                const done = p.n <= 2;
+                const isCurrent = p.n === 3;
+                const locked = p.n > 3;
                 return (
                   <Reveal key={p.n} delay={i * 60}>
                     <div className="relative mb-3">
@@ -160,7 +160,7 @@ export function GateG1Section() {
             </p>
             <p className="mt-3 text-[14px] leading-relaxed text-dim">
               The dataset register, proxy-label policy, schema-matching plan and synthetic cohort
-              protocol in §16–18 are the deliverables issued under this revision.
+              protocol in §16–18 were issued under REV B and remain binding on every later phase.
             </p>
             <div className="mt-6">
               <div className="stamp inline-block border-[3px] border-green px-6 py-3" style={{ color: "#7ce7a5" }}>
@@ -227,7 +227,7 @@ export function GateG2Section({ g2, onApprove }: { g2: boolean; onApprove: () =>
             </p>
             <p className="mt-3 text-[14px] leading-relaxed text-dim">
               {g2
-                ? "Next: distributions, missingness, class balance and correlations for every adopted dataset — no silent column drops, report reviewed before Phase 4."
+                ? "Issued under REV B and passed at this gate: ten dataset dossiers with verdicts, the proxy-label policy, the schema-matching plan S1–S6 and the synthetic cohort protocol."
                 : "On approval, the next deliverable is the EDA report: statistical summaries, missing-value analysis, class balance and correlation structure for every ADOPT/CONDITIONAL dataset that survives intake."}
             </p>
 
@@ -256,6 +256,97 @@ export function GateG2Section({ g2, onApprove }: { g2: boolean; onApprove: () =>
                 No model is trained on a row of data whose license is not on record, and no
                 CONDITIONAL dataset survives a failed intake check. The register above is the
                 contract; Phase 3 executes it.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ---------- 24 · Gate G-3 ---------- */
+const G3_CHECK = [
+  "Six EDA work packages — inputs, outputs, acceptance criteria, all runnable from the notebook",
+  "Complete 33-attribute ledger with a signed disposition per column (14 KEEP · 16 EXCLUDE · 2 LEAK · 1 TARGET)",
+  "Missingness rule — the documented 'clean' claim will be re-verified at load; every gap needs a decision",
+  "Leakage case closed in writing — G1/G2 barred from the primary model, reserved for sensitivity analysis",
+  "Target frozen: fail := (G3 < 10), per subject file, with a 60/20/20 stratified partition contract",
+  "Imbalance response protocol signed before any ratio is measured",
+];
+
+export function GateG3Section({ g3, onApprove }: { g3: boolean; onApprove: () => void }) {
+  return (
+    <Section
+      id="s24"
+      index="24"
+      kicker="Gate G-3"
+      title="Approval Gate — Phase 3"
+      intro="Phase 3 stops here by design. The EDA contract is complete; the notebook that executes it — and Phase 4, which builds the preprocessing pipelines — begin only when this gate passes."
+    >
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+        <Reveal>
+          <div className="panel h-full p-5 sm:p-6">
+            <p className="mono-label text-cyan">Phase 3 deliverable checklist</p>
+            <ul className="mt-4 space-y-2">
+              {G3_CHECK.map((d, i) => (
+                <li key={d} className="flex items-start gap-2.5 text-[13.5px] text-dim">
+                  <svg viewBox="0 0 16 16" className="mt-[3px] h-3.5 w-3.5 shrink-0 text-green" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2.5 8.5 L6.5 12.5 L13.5 4" />
+                  </svg>
+                  <span>
+                    <span className="mr-2 font-mono text-[10px] text-faint">{String(i + 1).padStart(2, "0")}</span>
+                    {d}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <div className="panel relative overflow-hidden border-amber/40 p-6 sm:p-8">
+            <Corners color={g3 ? "#7ce7a5" : "#ffc266"} />
+            <p className={`mono-label ${g3 ? "text-green" : "text-amber"}`}>
+              {g3 ? "Decision recorded" : "Decision required"}
+            </p>
+            <p className="display-head mt-3 text-2xl leading-tight text-ink sm:text-3xl">
+              {g3
+                ? "Phase 3 approved. Phase 4 — Preprocessing — unlocked."
+                : "Approve the EDA contract to unlock Phase 4 — Preprocessing."}
+            </p>
+            <p className="mt-3 text-[14px] leading-relaxed text-dim">
+              {g3
+                ? "Next: reusable pipelines — imputation, scaling, encoding — fitted inside cross-validation only, with the leakage checklist enforced by tests. The notebook first executes the contract approved here."
+                : "On approval, Phase 4 builds the reusable preprocessing pipelines: imputation, scaling and encoding fitted strictly inside CV folds — the leakage checklist from §22 becomes an automated test."}
+            </p>
+
+            {!g3 ? (
+              <button
+                onClick={onApprove}
+                className="group mt-6 inline-flex items-center gap-3 border border-amber bg-amber/10 px-6 py-3.5 transition-all duration-200 hover:bg-amber/20 hover:shadow-[0_0_28px_rgba(255,194,102,0.18)] active:translate-y-[1px]"
+              >
+                <svg viewBox="0 0 20 20" className="h-4 w-4 text-amber transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M3 10.5 L8 15.5 L17 4.5" />
+                </svg>
+                <span className="mono-label text-[10.5px] text-amber">Approve Phase 3 — proceed to preprocessing</span>
+              </button>
+            ) : (
+              <div className="relative mt-6 inline-block">
+                <div className="stamp border-[3px] border-green px-6 py-3" style={{ color: "#7ce7a5" }}>
+                  <p className="mono-label text-[12px] tracking-[0.3em]">APPROVED</p>
+                  <p className="mt-1 text-center font-mono text-[9px] text-green/70">G-3 · DT-CIS-SD-001 · REV C</p>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-7 border-t border-line pt-4">
+              <p className="mono-label text-[8.5px] text-faint">What this gate does NOT approve</p>
+              <p className="mt-2 text-[12.5px] leading-relaxed text-faint">
+                It approves the contract — not the measurements. The distributions, ratios and
+                coefficients the notebook produces are findings to be reported in Phase 4's review,
+                including any that contradict an assumption made here. Surprises are evidence, not
+                failures.
               </p>
             </div>
           </div>

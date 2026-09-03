@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV B",
-  sheet: "02 / 02",
-  phase: "PHASE 2 — DATA",
+  rev: "REV C",
+  sheet: "03 / 03",
+  phase: "PHASE 3 — EDA",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -308,8 +308,8 @@ export interface Phase {
 
 export const PHASES: Phase[] = [
   { n: 1, stage: "Foundations", name: "System Design", weeks: "done", deliverable: "This document: problem, objectives, features, architecture, schema, stack, risks, ethics.", exit: "Supervisor approval — PASSED at gate G-1" },
-  { n: 2, stage: "Foundations", name: "Data", weeks: "now", deliverable: "Dataset cards (source, license, records, features, limits); proxy-label policy; schema-matching plan; synthetic cohort protocol.", exit: "All licenses verified or dataset excluded ← YOU ARE HERE" },
-  { n: 3, stage: "Foundations", name: "EDA", weeks: "0.5 wk", deliverable: "Distributions, missingness, class balance, correlation report.", exit: "No silent column drops; report reviewed" },
+  { n: 2, stage: "Foundations", name: "Data", weeks: "done", deliverable: "REV B: ten dataset dossiers with verdicts, proxy-label policy, synthetic cohort protocol, schema-matching plan S1–S6.", exit: "Registered at gate G-2 — 4 adopted · 4 conditional · 2 rejected · 1 build" },
+  { n: 3, stage: "Foundations", name: "EDA", weeks: "now", deliverable: "REV C: the EDA contract — six work packages, the 33-attribute ledger, the leakage log, the balance protocol.", exit: "No silent column drops — pre-committed ← THIS DOCUMENT, awaiting G-3" },
   { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "0.5 wk", deliverable: "Reusable pipelines (impute, scale, encode) fitted inside CV only.", exit: "Leakage checklist signed off" },
   { n: 5, stage: "Models", name: "Baseline models", weeks: "0.5 wk", deliverable: "LogReg + RF reference bars with full metrics.", exit: "Baselines reproducible from one command" },
   { n: 6, stage: "Models", name: "Advanced ML", weeks: "1 wk", deliverable: "GB / XGBoost? / SVM / MLP comparison; nested CV for tuning.", exit: "Winner chosen by evidence table" },
@@ -362,7 +362,8 @@ export const TWIN_NODES: TwinNode[] = [
 
 export const REV_LEDGER = [
   { rev: "REV A", phase: "Phase 1 — System Design", status: "APPROVED", tone: "green" as const, note: "Gate G-1 passed. Design frozen; feature scope locked; risk register accepted." },
-  { rev: "REV B", phase: "Phase 2 — Data", status: "ISSUED", tone: "amber" as const, note: "Dataset evaluation, proxy-label policy, schema-matching plan, synthetic protocol. Awaiting gate G-2." },
+  { rev: "REV B", phase: "Phase 2 — Data", status: "APPROVED", tone: "green" as const, note: "Gate G-2 passed. Ten dataset verdicts on record; proxy policy signed; schema plan S1–S6 binding." },
+  { rev: "REV C", phase: "Phase 3 — EDA", status: "ISSUED", tone: "amber" as const, note: "The EDA contract: work packages, 33-attribute ledger, leakage log, balance protocol. Awaiting gate G-3." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
@@ -641,3 +642,113 @@ export const P2_DELIVERABLES = [
 
 export const P2_EXIT =
   "Gate G-2 passes when every candidate source is either licensed-and-documented or excluded-and-explained, the proxy-label sentence is written, and the schema plan has a validation checklist. No model sees a row before then.";
+
+/* ============================================================
+   PHASE 3 · Exploratory Data Analysis — the EDA contract
+   Every column disposition is pre-committed here, before the
+   data is loaded. The notebook executes; this revision approves.
+   ============================================================ */
+
+export const EDA_INTRO =
+  "The data is registered but not yet loaded — so this revision contains no EDA numbers, and it refuses to invent them. What it does instead is harder: pre-commit every analytical decision before the notebook runs. Six work packages, a full 33-attribute ledger with a verdict on every column, the leakage case closed in writing, and the balance protocol signed. Whatever the data shows at load time, nothing will enter or leave the model quietly.";
+
+export const EDA_WORKPACKAGES = [
+  { id: "AP-1", name: "Attribute inventory", input: "Loaded CSV + dataset README", output: "reports/ap1_inventory.md — type, range and role of all 33 attributes", acceptance: "All 33 attributes accounted for; zero silent column drops" },
+  { id: "AP-2", name: "Missingness audit", input: "Inventory frame", output: "Missingness table + per-gap decision log", acceptance: "Every gap gets an explicit decision — drop, impute, or flag. None silently" },
+  { id: "AP-3", name: "Distribution analysis", input: "Modeling subset (14 KEEP attributes)", output: "Histograms, ordinal-scale tables, binary imbalances", acceptance: "Ordinal 1–5 scales never treated as interval without a written note; skew documented" },
+  { id: "AP-4", name: "Class balance analysis", input: "Target fail = (G3 < 10), per subject", output: "Balance table + stratified-split plan", acceptance: "Ratio measured per subject file (mat / por) and logged; minority protocol ready" },
+  { id: "AP-5", name: "Correlation analysis", input: "Modeling subset + G3", output: "Spearman matrix; VIF on the ordinal cluster (studytime / freetime / goout)", acceptance: "No feature pair above |0.85| without a documented keep/drop decision" },
+  { id: "AP-6", name: "Sensitive-attribute audit", input: "Full attribute set vs E-3 exclusion log", output: "Exclusion audit — 16 EXCLUDE attributes, each with a reason", acceptance: "No excluded attribute reaches any feature pipeline — asserted by a test" },
+];
+
+export type AttrDecision = "KEEP" | "EXCLUDE" | "LEAK" | "TARGET";
+export type AttrGroup = "SCHOOL" | "FAMILY" | "STUDY" | "DEMOGRAPHIC" | "ACHIEVEMENT";
+
+export interface UciAttr {
+  name: string;
+  type: "BIN" | "ORD" | "NUM" | "NOM";
+  range: string;
+  group: AttrGroup;
+  decision: AttrDecision;
+  note: string;
+}
+
+/* Transcribed from the UCI Student Performance data dictionary.
+   Dispositions are the pre-committed EDA contract — verified at load time. */
+export const UCI_ATTRIBUTES: UciAttr[] = [
+  { name: "school", type: "BIN", range: "GP / MS", group: "SCHOOL", decision: "KEEP", note: "Which school — a control variable, never an identity" },
+  { name: "sex", type: "BIN", range: "F / M", group: "DEMOGRAPHIC", decision: "EXCLUDE", note: "E-3: sensitive attribute — description only" },
+  { name: "age", type: "NUM", range: "15 – 22", group: "DEMOGRAPHIC", decision: "EXCLUDE", note: "E-3: sensitive attribute — description only" },
+  { name: "address", type: "BIN", range: "urban / rural", group: "DEMOGRAPHIC", decision: "EXCLUDE", note: "Residential context — described, not scored" },
+  { name: "famsize", type: "BIN", range: "≤3 / >3", group: "FAMILY", decision: "EXCLUDE", note: "Family structure — described, not scored" },
+  { name: "Pstatus", type: "BIN", range: "together / apart", group: "FAMILY", decision: "EXCLUDE", note: "Family situation — sensitive context" },
+  { name: "Medu", type: "ORD", range: "0 – 4", group: "FAMILY", decision: "EXCLUDE", note: "Socioeconomic proxy — bias risk" },
+  { name: "Fedu", type: "ORD", range: "0 – 4", group: "FAMILY", decision: "EXCLUDE", note: "Socioeconomic proxy — bias risk" },
+  { name: "Mjob", type: "NOM", range: "5 classes", group: "FAMILY", decision: "EXCLUDE", note: "Socioeconomic proxy — bias risk" },
+  { name: "Fjob", type: "NOM", range: "5 classes", group: "FAMILY", decision: "EXCLUDE", note: "Socioeconomic proxy — bias risk" },
+  { name: "reason", type: "NOM", range: "4 classes", group: "SCHOOL", decision: "KEEP", note: "Why this school — a legitimate motivation signal" },
+  { name: "guardian", type: "NOM", range: "3 classes", group: "FAMILY", decision: "EXCLUDE", note: "Family structure — described, not scored" },
+  { name: "traveltime", type: "ORD", range: "1 – 4", group: "SCHOOL", decision: "KEEP", note: "Commute cost — legitimate study-context feature" },
+  { name: "studytime", type: "ORD", range: "1 – 4", group: "STUDY", decision: "KEEP", note: "Core behavioral feature of the twin" },
+  { name: "failures", type: "NUM", range: "0 – 3+", group: "ACHIEVEMENT", decision: "KEEP", note: "Previous years' failures — predictive, not current-year leakage" },
+  { name: "schoolsup", type: "BIN", range: "yes / no", group: "SCHOOL", decision: "KEEP", note: "Educational support — context feature" },
+  { name: "famsup", type: "BIN", range: "yes / no", group: "FAMILY", decision: "KEEP", note: "Family study support — a support mechanism, not sensitive" },
+  { name: "paid", type: "BIN", range: "yes / no", group: "SCHOOL", decision: "KEEP", note: "Extra paid classes — resource feature" },
+  { name: "activities", type: "BIN", range: "yes / no", group: "STUDY", decision: "KEEP", note: "Extracurriculars — behavioral feature" },
+  { name: "nursery", type: "BIN", range: "yes / no", group: "FAMILY", decision: "EXCLUDE", note: "Early-childhood socioeconomic proxy" },
+  { name: "higher", type: "BIN", range: "yes / no", group: "STUDY", decision: "KEEP", note: "Higher-education aspiration — strong legitimate signal" },
+  { name: "internet", type: "BIN", range: "yes / no", group: "FAMILY", decision: "KEEP", note: "Resource access — kept; flagged for supervisor review at G-3" },
+  { name: "romantic", type: "BIN", range: "yes / no", group: "DEMOGRAPHIC", decision: "EXCLUDE", note: "Personal life — never a model input" },
+  { name: "famrel", type: "ORD", range: "1 – 5", group: "FAMILY", decision: "EXCLUDE", note: "Family dynamics — sensitive context" },
+  { name: "freetime", type: "ORD", range: "1 – 5", group: "STUDY", decision: "KEEP", note: "Free time after school — behavioral feature" },
+  { name: "goout", type: "ORD", range: "1 – 5", group: "STUDY", decision: "KEEP", note: "Social activity — behavioral feature" },
+  { name: "Dalc", type: "ORD", range: "1 – 5", group: "STUDY", decision: "EXCLUDE", note: "Alcohol use — health behavior, sensitive" },
+  { name: "Walc", type: "ORD", range: "1 – 5", group: "STUDY", decision: "EXCLUDE", note: "Alcohol use — health behavior, sensitive" },
+  { name: "health", type: "ORD", range: "1 – 5", group: "STUDY", decision: "EXCLUDE", note: "Health — sensitive attribute" },
+  { name: "absences", type: "NUM", range: "0 – 93", group: "SCHOOL", decision: "KEEP", note: "Core behavioral feature — the prime early-warning candidate" },
+  { name: "G1", type: "NUM", range: "0 – 20", group: "ACHIEVEMENT", decision: "LEAK", note: "First-period grade — the target measured earlier. See §22" },
+  { name: "G2", type: "NUM", range: "0 – 20", group: "ACHIEVEMENT", decision: "LEAK", note: "Second-period grade — the target measured earlier. See §22" },
+  { name: "G3", type: "NUM", range: "0 – 20", group: "ACHIEVEMENT", decision: "TARGET", note: "Final grade — the outcome. Never a feature" },
+];
+
+export const MISSINGNESS_NOTE =
+  "The source paper documents this dataset as arriving without missing cells. That is a claim, not evidence — AP-2 re-verifies it at load time. Any gap found then receives an explicit decision: drop, impute, or flag. Silent deletion is the one unforgivable sin of this phase, and the ledger above exists so a supervisor can check every disposition.";
+
+export const LEAKAGE = {
+  claim:
+    "G3 is the outcome the dataset records. G1 and G2 are earlier recordings of nearly the same quantity — the source paper documents them as strongly correlated with G3. A model that uses them to “predict” failure is grading an exam with the exam in its pocket.",
+  modelA: {
+    name: "Model A — with G1 + G2",
+    steps: ["14 behavioral features", "+ G1, G2", "classifier", "near-ceiling metrics"],
+    verdict:
+      "Trivially accurate, useless for decisions. By the time G2 exists the student already knows how the year is going — the system has nothing left to advise, only to echo.",
+    flag: "LEAKAGE — rejected as primary",
+  },
+  modelB: {
+    name: "Model B — behavioral features only",
+    steps: ["14 KEEP features", "classifier", "honest, lower metrics"],
+    verdict:
+      "Answers the question this project actually asks: can early, observable behavior — attendance, study time, support structures, aspiration — indicate risk before the year is over?",
+    flag: "PRIMARY MODEL",
+  },
+  sensitivity:
+    "G1 and G2 are not deleted. They enter a documented sensitivity analysis — how much does grade history add on top of behavior? The delta is reported as information about the data, never as the headline model.",
+};
+
+export const BALANCE_PROTOCOL = {
+  target: "fail := (G3 < 10)   // 0–20 scale · the pass criterion documented with the dataset · applied per subject file (mat / por)",
+  splits: [
+    { name: "TRAIN", share: 60, color: "#6be1ff", note: "Model fitting, with stratified 5-fold CV inside — never outside" },
+    { name: "CV", share: 20, color: "#ffc266", note: "Model selection between candidates — touched in loops only" },
+    { name: "TEST", share: 20, color: "#ff8b8b", note: "Touched exactly once, after every choice is frozen" },
+  ],
+  responses: [
+    "Measure the pass/fail ratio per subject file — mat and por are different student populations and will be reported separately.",
+    "If the minority class falls below 25%: log it, then run class_weight = 'balanced' as a documented sensitivity analysis — never as a silent fix.",
+    "Stratify every split and every fold on the target, so the ratio survives partitioning.",
+    "Report the measured ratios in the EDA report. An imbalanced target is a finding to state, not an embarrassment to smooth over.",
+  ],
+};
+
+export const EDA_EXIT =
+  "14 features in · 16 documented exclusions · 2 leakage-flagged · 1 target. Every column of the primary dataset has a disposition, in writing, before load. The notebook executes this contract; it does not renegotiate it.";
