@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV G",
-  sheet: "07 / 07",
-  phase: "PHASE 7 — CLUSTERING",
+  rev: "REV H",
+  sheet: "08 / 08",
+  phase: "PHASE 8 — CAREER RECOMMENDATION",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -313,8 +313,8 @@ export const PHASES: Phase[] = [
   { n: 4, stage: "Foundations", name: "Preprocessing", weeks: "done", deliverable: "REV D: ColumnTransformer composition, fit discipline, leakage tests as code, twin input validator.", exit: "Leakage checklist executable; pipeline reproducible. PASSED at gate G-4" },
   { n: 5, stage: "Models", name: "Baseline models", weeks: "done", deliverable: "REV E: baseline harness code, blank results template, confusion-matrix lab, ROC worked example, evidence chain.", exit: "Harness + metric machinery on record. PASSED at gate G-5" },
   { n: 6, stage: "Models", name: "Advanced ML", weeks: "done", deliverable: "REV F: candidate grid with conditional gates, nested-CV protocol, evidence rules R-1..R-5, model-card anatomy.", exit: "Selection machinery decided before Run 002; null-result clause signed. PASSED at gate G-6" },
-  { n: 7, stage: "Models", name: "Student clustering", weeks: "now", deliverable: "REV G: k-selection protocol (elbow + silhouette + 10-seed stability), naming protocol, guardrails, live k-means methodology demo.", exit: "k earned by evidence; labels descriptive, never psychological ← THIS DOCUMENT, awaiting G-7" },
-  { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "1 wk", deliverable: "Hybrid compatibility engine + methodology doc.", exit: "Unit tests on fixed profiles pass" },
+  { n: 7, stage: "Models", name: "Student clustering", weeks: "done", deliverable: "REV G: k-selection protocol (elbow + silhouette + 10-seed stability), naming protocol, guardrails, live k-means methodology demo.", exit: "k earned by evidence; labels descriptive, never psychological. PASSED at gate G-7" },
+  { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "now", deliverable: "REV H: frozen four-term scoring equation, 12 career weight vectors, live decomposition engine, explainability contract.", exit: "Every score argues for itself; missing evidence renormalized, never faked ← THIS DOCUMENT, awaiting G-8" },
   { n: 9, stage: "Intelligence", name: "Skill-gap engine", weeks: "0.5 wk", deliverable: "Weighted gap tables and priority ranking.", exit: "Ranking invariants tested" },
   { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "1 wk", deliverable: "Learning + project + portfolio recommenders with justifications.", exit: "Every output carries a citable reason" },
   { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "1.5 wk", deliverable: "spaCy + dictionary extractor; twin diff report.", exit: "Confidence + miss-list always rendered" },
@@ -367,7 +367,8 @@ export const REV_LEDGER = [
   { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "APPROVED", tone: "green" as const, note: "Gate G-4 passed. Pipeline composition accepted; leakage checklist executable; validator guards the twin." },
   { rev: "REV E", phase: "Phase 5 — Baseline Models", status: "APPROVED", tone: "green" as const, note: "Gate G-5 passed. Harness on record; results table blank by design; metric machinery taught by hand." },
   { rev: "REV F", phase: "Phase 6 — Advanced ML", status: "APPROVED", tone: "green" as const, note: "Gate G-6 passed. Candidate grid and evidence rules frozen; the champion will be chosen by Run 002, not by fashion." },
-  { rev: "REV G", phase: "Phase 7 — Student Clustering", status: "ISSUED", tone: "amber" as const, note: "k-selection protocol, naming protocol, guardrails, live methodology demo. Awaiting gate G-7." },
+  { rev: "REV G", phase: "Phase 7 — Student Clustering", status: "APPROVED", tone: "green" as const, note: "Gate G-7 passed. Clustering stays descriptive: no personalities, no ranks, no destinies — protocol and naming rules signed." },
+  { rev: "REV H", phase: "Phase 8 — Career Recommendation", status: "ISSUED", tone: "amber" as const, note: "Scoring equation, career weight vectors, live decomposition engine, explainability contract. Awaiting gate G-8." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";

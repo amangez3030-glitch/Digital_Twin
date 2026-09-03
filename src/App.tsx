@@ -26,17 +26,24 @@ import {
   GuardrailsSection,
   GateG7Section,
 } from "./components/Phase7";
+import {
+  EquationSection,
+  LabSection,
+  WeightMatrixSection,
+  ExplainContractSection,
+  GateG8Section,
+} from "./components/Phase8";
 
-function Footer({ g7 }: { g7: boolean }) {
+function Footer({ g8 }: { g8: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 7 of 18. A decision-support
-            design document. No datasets were loaded, no models trained, and no clusters named —
-            except the ones you can cluster yourself, right now, on the seeded demo points in §41.
+            AI Digital Twin &amp; Career Intelligence System — Phase 8 of 18. A decision-support
+            design document. No datasets were loaded and no models trained — but the compatibility
+            engine in §46 is real: drag a slider and watch a score argue for itself.
           </p>
         </div>
         <div>
@@ -50,8 +57,8 @@ function Footer({ g7 }: { g7: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g7 ? "text-green" : "text-amber"}`}>
-            {g7 ? "G-7 PASSED → PHASE 8 (CAREER RECOMMENDATION)" : "G-7 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g8 ? "text-green" : "text-amber"}`}>
+            {g8 ? "G-8 PASSED → PHASE 9 (SKILL GAP ENGINE)" : "G-8 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -66,9 +73,9 @@ function Footer({ g7 }: { g7: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-6 are recorded as passed (REV A–F approved).
-  // G-7 is the live decision of this revision.
-  const [g7, setG7] = useState(false);
+  // Gates G-1 → G-7 are recorded as passed (REV A–G approved).
+  // G-8 is the live decision of this revision.
+  const [g8, setG8] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -77,8 +84,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g7={g7} />
-      <Opener g7={g7} />
+      <Header g8={g8} />
+      <Opener g8={g8} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -137,10 +144,17 @@ export default function App() {
         <ElbowLabSection />
         <NamingSection />
         <GuardrailsSection />
-        <GateG7Section g7={g7} onApprove={() => setG7(true)} />
+        <GateG7Section g7 onApprove={() => undefined} />
+
+        {/* Phase 8 — Career Recommendation */}
+        <EquationSection />
+        <LabSection />
+        <WeightMatrixSection />
+        <ExplainContractSection />
+        <GateG8Section g8={g8} onApprove={() => setG8(true)} />
       </main>
 
-      <Footer g7={g7} />
+      <Footer g8={g8} />
     </div>
   );
 }

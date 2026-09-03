@@ -163,6 +163,35 @@ body {
   animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
 
+/* Compatibility-lab range sliders */
+.twin-range {
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, rgba(107, 225, 255, 0.35), rgba(107, 225, 255, 0.12));
+  border: 1px solid #1c2c44;
+  outline: none;
+}
+.twin-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  background: #6be1ff;
+  border: 1px solid #081120;
+  box-shadow: 0 0 8px rgba(107, 225, 255, 0.55);
+  cursor: ew-resize;
+  transition: transform 0.15s ease;
+}
+.twin-range::-webkit-slider-thumb:hover { transform: scale(1.35); }
+.twin-range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  background: #6be1ff;
+  border: 1px solid #081120;
+  box-shadow: 0 0 8px rgba(107, 225, 255, 0.55);
+  cursor: ew-resize;
+}
+
 /* Nested-CV scan — steps through the five outer folds */
 @keyframes nestscan {
   0%, 17%   { transform: translateY(0); }
