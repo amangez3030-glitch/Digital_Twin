@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV I",
-  sheet: "09 / 09",
-  phase: "PHASE 9 — SKILL GAP ENGINE",
+  rev: "REV J",
+  sheet: "10 / 10",
+  phase: "PHASE 10 — RECOMMENDATION ENGINE",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
