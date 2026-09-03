@@ -364,7 +364,8 @@ export const REV_LEDGER = [
   { rev: "REV A", phase: "Phase 1 — System Design", status: "APPROVED", tone: "green" as const, note: "Gate G-1 passed. Design frozen; feature scope locked; risk register accepted." },
   { rev: "REV B", phase: "Phase 2 — Data", status: "APPROVED", tone: "green" as const, note: "Gate G-2 passed. Ten dataset verdicts on record; proxy policy signed; schema plan S1–S6 binding." },
   { rev: "REV C", phase: "Phase 3 — EDA", status: "APPROVED", tone: "green" as const, note: "Gate G-3 passed. EDA contract accepted: 33-attribute ledger, leakage log, balance protocol." },
-  { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "ISSUED", tone: "amber" as const, note: "ColumnTransformer composition, fit discipline, leakage tests, input validator. Awaiting gate G-4." },
+  { rev: "REV D", phase: "Phase 4 — Preprocessing", status: "APPROVED", tone: "green" as const, note: "Gate G-4 passed. Pipeline composition accepted; leakage checklist executable; validator guards the twin." },
+  { rev: "REV E", phase: "Phase 5 — Baseline Models", status: "ISSUED", tone: "amber" as const, note: "Baseline harness code, honest blank results template, metric machinery. Awaiting gate G-5." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
