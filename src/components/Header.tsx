@@ -1,0 +1,72 @@
+import { DOC_META } from "../data/design";
+import { useScrollSpy } from "../hooks";
+
+export const SECTIONS: { id: string; n: string; label: string }[] = [
+  { id: "s01", n: "01", label: "Problem" },
+  { id: "s02", n: "02", label: "Objectives" },
+  { id: "s03", n: "03", label: "Users" },
+  { id: "s04", n: "04", label: "Features" },
+  { id: "s05", n: "05", label: "ML Components" },
+  { id: "s06", n: "06", label: "Datasets" },
+  { id: "s07", n: "07", label: "Architecture" },
+  { id: "s08", n: "08", label: "Database" },
+  { id: "s09", n: "09", label: "Stack" },
+  { id: "s10", n: "10", label: "Difficulty" },
+  { id: "s11", n: "11", label: "Risks" },
+  { id: "s12", n: "12", label: "Ethics" },
+  { id: "s13", n: "13", label: "Differentiation" },
+  { id: "s14", n: "14", label: "Roadmap" },
+  { id: "s15", n: "15", label: "Approval" },
+];
+
+export default function Header({ approved }: { approved: boolean }) {
+  const active = useScrollSpy(SECTIONS.map((s) => s.id));
+
+  return (
+    <div className="fixed inset-x-0 top-0 z-50">
+      {/* top bar */}
+      <div className="border-b border-line bg-base/90 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-2.5 sm:px-8">
+          <a href="#top" className="flex items-center gap-2.5">
+            <svg viewBox="0 0 32 32" className="h-6 w-6" aria-hidden="true">
+              <path d="M16 4 L26 10 V22 L16 28 L6 22 V10 Z" fill="none" stroke="#6be1ff" strokeWidth="2" />
+              <circle cx="16" cy="16" r="3" fill="#ffc266" />
+            </svg>
+            <span className="font-display text-sm font-semibold tracking-wide text-ink">
+              {DOC_META.code}
+              <span className="text-faint"> / SD</span>
+            </span>
+          </a>
+          <span className="mono-label hidden text-faint md:block">{DOC_META.docNo} · {DOC_META.rev}</span>
+          <span
+            className={`mono-label ml-auto border px-2 py-[3px] text-[9px] ${
+              approved ? "border-green/50 text-green" : "border-amber/50 text-amber"
+            }`}
+          >
+            {approved ? "PHASE 1 APPROVED" : "PHASE 1 · PENDING"}
+          </span>
+        </div>
+      </div>
+
+      {/* index rail */}
+      <nav className="border-b border-line/70 bg-deep/85 backdrop-blur-sm" aria-label="Document sections">
+        <div className="nav-index mx-auto flex max-w-6xl gap-1 overflow-x-auto px-5 py-1.5 sm:px-8">
+          {SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={`mono-label shrink-0 px-2.5 py-1 text-[9px] transition-colors duration-200 ${
+                active === s.id
+                  ? "bg-cyan/10 text-cyan"
+                  : "text-faint hover:bg-panel2 hover:text-dim"
+              }`}
+            >
+              <span className="mr-1 text-line2">{s.n}</span>
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </div>
+  );
+}
