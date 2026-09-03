@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV K",
-  sheet: "11 / 11",
-  phase: "PHASE 11 — NLP RESUME INTELLIGENCE",
+  rev: "REV L",
+  sheet: "12 / 12",
+  phase: "PHASE 12 — JOB MATCHING",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -317,8 +317,8 @@ export const PHASES: Phase[] = [
   { n: 8, stage: "Intelligence", name: "Career recommendation", weeks: "done", deliverable: "REV H: frozen four-term scoring equation, 12 career weight vectors, live decomposition engine, explainability contract.", exit: "Every score argues for itself; missing evidence renormalized, never faked. PASSED at gate G-8" },
   { n: 9, stage: "Intelligence", name: "Skill-gap engine", weeks: "done", deliverable: "REV I: weighted-shortfall math, prerequisite DAG, payoff-per-effort ranking, live gap engine.", exit: "Gap table argues for its ordering; 'learn next' is derived, not asserted. PASSED at gate G-9" },
   { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "done", deliverable: "REV J: frozen recommender rules, honest catalog (free/audit only), live sequence builder, why-not panel.", exit: "Every recommendation cites its shortfall that caused it; nothing recommended is paid or affiliated. PASSED at gate G-10" },
-  { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "now", deliverable: "REV K: frozen extraction pipeline, alias vocabulary v1, confidence protocol with evidence, live deterministic extractor, twin-diff contract.", exit: "No silent guesses; confidence and miss-list always rendered ← THIS DOCUMENT, awaiting G-11" },
-  { n: 12, stage: "Intelligence", name: "JD matching", weeks: "0.5 wk", deliverable: "Job description parsing + match/gap report.", exit: "“Match ≠ hiring” disclaimer enforced in UI" },
+  { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "done", deliverable: "REV K: frozen extraction pipeline, alias vocabulary v1, confidence protocol with evidence, live deterministic extractor, twin-diff contract.", exit: "No silent guesses; confidence and miss-list always rendered. PASSED at gate G-11" },
+  { n: 12, stage: "Intelligence", name: "JD matching", weeks: "now", deliverable: "REV L: frozen matcher math (required 2×/preferred 1×), live JD matcher, skill-normalization reuse, 'match ≠ hiring' contract.", exit: "Match is a fit gauge, never a hiring prediction; disclaimer enforced in UI ← THIS DOCUMENT, awaiting G-12" },
   { n: 13, stage: "Intelligence", name: "Explainable AI", weeks: "1 wk", deliverable: "SHAP integration; global + local explanation views.", exit: "Explanations reference actual feature values" },
   { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "1 wk", deliverable: "Versioned profile store, readiness indicators, progress views.", exit: "Formulas published in-app" },
   { n: 15, stage: "Application", name: "Future simulator", weeks: "0.5 wk", deliverable: "Scenario engine with before/after deltas; never writes to the twin.", exit: "Scenario labeling verified in UI" },
@@ -371,7 +371,8 @@ export const REV_LEDGER = [
   { rev: "REV H", phase: "Phase 8 — Career Recommendation", status: "APPROVED", tone: "green" as const, note: "Gate G-8 passed. The score argues for itself: four named terms, renormalized absent evidence, careers ranked — never people." },
   { rev: "REV I", phase: "Phase 9 — Skill Gap Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-9 passed. 'Learn next' is derived from weighted shortfall and prerequisite gates — never asserted." },
   { rev: "REV J", phase: "Phase 10 — Recommendation Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-10 passed. Nothing recommended is paid or affiliated; every plan cites its shortfall and its refusals." },
-  { rev: "REV K", phase: "Phase 11 — NLP Resume Intelligence", status: "ISSUED", tone: "amber" as const, note: "Frozen extraction pipeline, alias vocabulary v1, confidence protocol, live extractor, twin-diff contract. Awaiting gate G-11." },
+  { rev: "REV K", phase: "Phase 11 — NLP Resume Intelligence", status: "APPROVED", tone: "green" as const, note: "Gate G-11 passed. Extraction is deterministic and evidence-tagged; the system transcribes claims and refuses to guess." },
+  { rev: "REV L", phase: "Phase 12 — Job Matching", status: "ISSUED", tone: "amber" as const, note: "Frozen matcher math, required/preferred weighting, live JD matcher, 'match ≠ hiring' contract. Awaiting gate G-12." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";

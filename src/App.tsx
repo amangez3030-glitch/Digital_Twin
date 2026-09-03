@@ -51,17 +51,23 @@ import {
   NormalizationSection,
   GateG11Section,
 } from "./components/Phase11";
+import {
+  MatcherMathSection,
+  LiveMatcherSection,
+  NotHiringSection,
+  GateG12Section,
+} from "./components/Phase12";
 
-function Footer({ g11 }: { g11: boolean }) {
+function Footer({ g12 }: { g12: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 11 of 18. A decision-support
-            design document. The extractor in §59 is real and deterministic: it transcribes claims,
-            counts its evidence, and refuses — out loud — to guess.
+            AI Digital Twin &amp; Career Intelligence System — Phase 12 of 18. A decision-support
+            design document. The matcher in §63 reports keyword overlap honestly — required counts
+            double, the unknown is named — and never mistakes a fit gauge for a hiring forecast.
           </p>
         </div>
         <div>
@@ -75,8 +81,8 @@ function Footer({ g11 }: { g11: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g11 ? "text-green" : "text-amber"}`}>
-            {g11 ? "G-11 PASSED → PHASE 12 (JOB MATCHING)" : "G-11 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g12 ? "text-green" : "text-amber"}`}>
+            {g12 ? "G-12 PASSED → PHASE 13 (EXPLAINABLE AI)" : "G-12 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -91,9 +97,9 @@ function Footer({ g11 }: { g11: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-10 are recorded as passed (REV A–J approved).
-  // G-11 is the live decision of this revision.
-  const [g11, setG11] = useState(false);
+  // Gates G-1 → G-11 are recorded as passed (REV A–K approved).
+  // G-12 is the live decision of this revision.
+  const [g12, setG12] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -102,8 +108,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g11={g11} />
-      <Opener g11={g11} />
+      <Header g12={g12} />
+      <Opener g12={g12} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -187,10 +193,16 @@ export default function App() {
         <PipelineSpecSection />
         <LiveExtractorSection />
         <NormalizationSection />
-        <GateG11Section g11={g11} onApprove={() => setG11(true)} />
+        <GateG11Section g11 onApprove={() => undefined} />
+
+        {/* Phase 12 — Job Matching */}
+        <MatcherMathSection />
+        <LiveMatcherSection />
+        <NotHiringSection />
+        <GateG12Section g12={g12} onApprove={() => setG12(true)} />
       </main>
 
-      <Footer g11={g11} />
+      <Footer g12={g12} />
     </div>
   );
 }
