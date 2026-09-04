@@ -13,16 +13,17 @@ import Xai from "./pages/Xai";
 import Twin from "./pages/Twin";
 import Delivery from "./pages/Delivery";
 import Defense from "./pages/Defense";
+import SystemShell from "./system/SystemShell";
 
-/* The dossier sits behind a local workspace gate. */
+/* Everything — product and dossier — sits behind the local workspace gate. */
 function RequireAuth({ children }: { children: React.ReactElement }) {
   if (!getSession()) return <Navigate to="/auth" replace />;
   return children;
 }
 
-/* Already cleared? The gate sends you straight into the document. */
+/* Already cleared? The gate sends you straight into the system. */
 function AuthGate() {
-  if (getSession()) return <Navigate to="/" replace />;
+  if (getSession()) return <Navigate to="/system" replace />;
   return <AuthPage />;
 }
 
@@ -31,6 +32,26 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/auth" element={<AuthGate />} />
+
+        {/* THE SYSTEM — the working product */}
+        <Route
+          path="/system"
+          element={
+            <RequireAuth>
+              <SystemShell />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/system/:page"
+          element={
+            <RequireAuth>
+              <SystemShell />
+            </RequireAuth>
+          }
+        />
+
+        {/* THE DOSSIER — the design explanation */}
         <Route
           element={
             <RequireAuth>

@@ -163,6 +163,19 @@ export const PHASE_PAGE: Record<number, string> = {
 
 export const pageByPath = (path: string) => PAGES.find((p) => p.path === path);
 
+/* The product itself — rendered above the document sheets in the sidebar. */
+export const SYS_LINKS: { path: string; label: string }[] = [
+  { path: "/system", label: "Dashboard" },
+  { path: "/system/twin", label: "Digital Twin" },
+  { path: "/system/careers", label: "Career Intelligence" },
+  { path: "/system/skills", label: "Skill Intelligence" },
+  { path: "/system/roadmap", label: "Learning Roadmap" },
+  { path: "/system/resume", label: "Resume Analyzer" },
+  { path: "/system/jobs", label: "Job Matcher" },
+  { path: "/system/simulate", label: "Future Simulator" },
+  { path: "/system/progress", label: "Progress" },
+];
+
 /* Sidebar grouping — the sheet index of the dossier. */
 export const NAV_GROUPS: { key: string; label: string; paths: string[] }[] = [
   { key: "foundations", label: "COVER", paths: ["/"] },

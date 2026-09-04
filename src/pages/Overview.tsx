@@ -134,13 +134,23 @@ function TitleBlock() {
 
       <div className="mt-6 flex flex-wrap gap-2">
         <Link
+          to="/system"
+          className="group inline-flex items-center gap-2.5 border border-green bg-green/10 px-5 py-3 transition-all duration-200 hover:bg-green/20 hover:shadow-[0_0_28px_rgba(124,231,165,0.2)] active:translate-y-[1px]"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
+          </span>
+          <span className="mono-label text-[10px] text-green">OPEN THE SYSTEM — IT RUNS</span>
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-green transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <path d="M2 8h11M9 3.5 13.5 8 9 12.5" />
+          </svg>
+        </Link>
+        <Link
           to="/design"
           className="group inline-flex items-center gap-2.5 border border-cyan bg-cyan/10 px-5 py-3 transition-all duration-200 hover:bg-cyan/20 hover:shadow-[0_0_28px_rgba(107,225,255,0.18)] active:translate-y-[1px]"
         >
-          <span className="mono-label text-[10px] text-cyan">OPEN PHASE 1 — SYSTEM DESIGN</span>
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-cyan transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M2 8h11M9 3.5 13.5 8 9 12.5" />
-          </svg>
+          <span className="mono-label text-[10px] text-cyan">READ THE DESIGN DOSSIER</span>
         </Link>
         <Link
           to="/defense"

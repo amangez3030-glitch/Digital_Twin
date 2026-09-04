@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DOC_META } from "../data/design";
-import { PAGES, NAV_GROUPS, pageByPath } from "../pages/registry";
+import { PAGES, NAV_GROUPS, SYS_LINKS, pageByPath } from "../pages/registry";
 import { clearSession, getSession, type SessionUser } from "../lib/auth";
 import { useTilt } from "../hooks";
 import Backplates from "../components/Backplates";
@@ -95,8 +95,41 @@ function UserChip({ user, onLogout, compact = false }: { user: SessionUser; onLo
 /* ---------- the sheet index (used by sidebar + drawer) ---------- */
 
 function SheetNav({ onNavigate }: { onNavigate?: () => void }) {
+  const { pathname } = useLocation();
   return (
     <nav aria-label="Document sheets" className="flex flex-col gap-4">
+      {/* the product itself */}
+      <div className="border border-cyan/30 bg-cyan/[0.05] p-2">
+        <p className="mono-label mb-1.5 flex items-center gap-2 px-1 text-[7.5px] tracking-[0.28em] text-cyan">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan" />
+          </span>
+          THE SYSTEM · LIVE
+        </p>
+        <div className="flex flex-col gap-0.5">
+          {SYS_LINKS.map((l) => {
+            const active = pathname === l.path;
+            return (
+              <Link
+                key={l.path}
+                to={l.path}
+                onClick={onNavigate}
+                className={`mono-label flex items-center gap-2 px-2 py-1.5 text-[9px] tracking-[0.12em] transition-all duration-200 ${
+                  active ? "bg-cyan/15 text-cyan" : "text-dim hover:bg-cyan/[0.06] hover:text-ink"
+                }`}
+              >
+                <svg viewBox="0 0 16 16" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6 3.5 10.5 8 6 12.5" />
+                </svg>
+                {l.label.toUpperCase()}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <p className="mono-label px-2 pt-1 text-[7.5px] tracking-[0.28em] text-faint">DESIGN DOSSIER — THE EXPLANATION</p>
       {NAV_GROUPS.map((g) => (
         <div key={g.label}>
           <p className="mono-label mb-1.5 px-2 text-[7.5px] tracking-[0.28em] text-faint">{g.label}</p>
@@ -503,7 +536,7 @@ export default function Shell() {
           <main key={pathname} className="pagein">
             <Outlet />
           </main>
-          <Pager path={pageByPath(pathname) ? pathname : "/"} />
+          {!pathname.startsWith("/system") && <Pager path={pageByPath(pathname) ? pathname : "/"} />}
           <SiteFooter />
         </div>
       </div>
