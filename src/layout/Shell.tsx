@@ -4,6 +4,8 @@ import { DOC_META } from "../data/design";
 import { PAGES, NAV_GROUPS, pageByPath } from "../pages/registry";
 import { clearSession, getSession, type SessionUser } from "../lib/auth";
 import { useTilt } from "../hooks";
+import Backplates from "../components/Backplates";
+import ParticleField from "../components/ParticleField";
 
 /* ---------- document-wide state (the final seal + workspace session) ---------- */
 
@@ -484,10 +486,12 @@ export default function Shell() {
     <DocCtx.Provider value={{ sealed, seal: () => setSealed(true), user, logout }}>
       <ScrollToTop />
       <div id="top" className="min-h-screen">
-        {/* ambient layers */}
+        {/* ambient layers — base grid, cinematic plates, 3D particles, effects */}
         <div className="bg-blueprint" aria-hidden="true" />
-        <div className="bg-noise" aria-hidden="true" />
+        <Backplates path={pathname} />
+        <ParticleField />
         <div className="bg-scan" aria-hidden="true" />
+        <div className="bg-noise" aria-hidden="true" />
 
         <Sidebar prog={prog} />
         <MobileBar onOpen={() => setDrawer(true)} />

@@ -164,11 +164,11 @@ export const PHASE_PAGE: Record<number, string> = {
 export const pageByPath = (path: string) => PAGES.find((p) => p.path === path);
 
 /* Sidebar grouping — the sheet index of the dossier. */
-export const NAV_GROUPS: { label: string; paths: string[] }[] = [
-  { label: "COVER", paths: ["/"] },
-  { label: "FOUNDATIONS", paths: ["/design", "/data"] },
-  { label: "MODELS", paths: ["/models", "/clustering"] },
-  { label: "INTELLIGENCE", paths: ["/intelligence", "/nlp", "/xai"] },
-  { label: "APPLICATION", paths: ["/twin", "/delivery"] },
-  { label: "DEFENSE", paths: ["/defense"] },
+export const NAV_GROUPS: { key: string; label: string; paths: string[] }[] = [
+  { key: "foundations", label: "COVER", paths: ["/"] },
+  { key: "foundations", label: "FOUNDATIONS", paths: ["/design", "/data"] },
+  { key: "models", label: "MODELS", paths: ["/models", "/clustering"] },
+  { key: "intelligence", label: "INTELLIGENCE", paths: ["/intelligence", "/nlp", "/xai"] },
+  { key: "application", label: "APPLICATION", paths: ["/twin", "/delivery"] },
+  { key: "defense", label: "DEFENSE", paths: ["/defense"] },
 ];

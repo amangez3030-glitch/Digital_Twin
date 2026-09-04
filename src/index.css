@@ -203,6 +203,37 @@ body {
   50% { translate: 0 -7px; }
 }
 .float-z { animation: floatz 5.5s ease-in-out infinite; }
+
+/* ---------- cinematic backplates ---------- */
+.backplate-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.backplate-img {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.backplate-img.on { opacity: 0.5; }
+@keyframes kenburns {
+  from { transform: scale(1.02) translate(0.4%, 0.3%); }
+  to { transform: scale(1.12) translate(-1.2%, -0.9%); }
+}
+.kenburns { animation: kenburns 34s ease-in-out infinite alternate; }
+.backplate-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 40%, transparent 0%, rgba(8, 17, 32, 0.55) 70%, rgba(8, 17, 32, 0.92) 100%),
+    linear-gradient(180deg, rgba(8, 17, 32, 0.6) 0%, rgba(8, 17, 32, 0.25) 30%, rgba(8, 17, 32, 0.75) 100%);
+}
 .roc-area {
   clip-path: inset(0 100% 0 0);
   animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
