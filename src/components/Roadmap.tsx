@@ -35,8 +35,8 @@ export function RoadmapSection() {
             </Reveal>
             <div className="ml-[5px] border-l border-line pl-6 sm:ml-[9px] sm:pl-8">
               {phases.map((p, i) => {
-                const done = p.n <= 11;
-                const isCurrent = p.n === 12;
+                const done = p.n <= 12;
+                const isCurrent = p.n === 13;
                 const locked = p.n > 4;
                 return (
                   <Reveal key={p.n} delay={i * 60}>

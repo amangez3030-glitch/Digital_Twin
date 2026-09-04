@@ -210,6 +210,9 @@ body {
 }
 .nest-scan { animation: nestscan 8s linear infinite; }
 
+/* SHAP waterfall bars — geometry animates as the profile moves */
+.wf-bar { transition: x 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+
 /* ---------- scroll reveal ---------- */
 .reveal {
   opacity: 0;
