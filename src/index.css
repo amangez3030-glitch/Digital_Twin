@@ -36,7 +36,7 @@ body {
 .bg-blueprint {
   position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -6;
   background-color: #081120;
   background-image:
     radial-gradient(ellipse 90% 55% at 50% -10%, rgba(43, 107, 133, 0.28), transparent 65%),
@@ -51,7 +51,7 @@ body {
 .bg-noise {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -61,7 +61,7 @@ body {
 .bg-scan {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -3;
   pointer-events: none;
   background: linear-gradient(180deg, transparent 0%, rgba(107, 225, 255, 0.035) 50%, transparent 100%);
   background-size: 100% 340px;
@@ -208,7 +208,7 @@ body {
 .backplate-layer {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -5;
   overflow: hidden;
   pointer-events: none;
 }

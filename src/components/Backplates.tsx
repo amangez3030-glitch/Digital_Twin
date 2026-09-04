@@ -9,6 +9,8 @@ import { NAV_GROUPS } from "../pages/registry";
    ============================================================ */
 
 const PLATES: Record<string, string> = {
+  system:
+    "https://image.qwenlm.ai/generated-images/f85004dc-19d6-4904-8f54-426913efbdd3/_result.png",
   foundations:
     "https://image.qwenlm.ai/generated-images/031a0c9d-cce7-4b7c-b989-ac6f714b99c6/_result.png",
   models:
@@ -22,6 +24,7 @@ const PLATES: Record<string, string> = {
 };
 
 function groupFor(path: string): string {
+  if (path.startsWith("/system") || path === "/auth") return "system";
   const g = NAV_GROUPS.find((gr) => gr.paths.includes(path));
   return g?.key ?? "foundations";
 }
