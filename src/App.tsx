@@ -81,17 +81,23 @@ import {
   StateCacheSection,
   GateG16Section,
 } from "./components/Phase16";
+import {
+  TestMatrixSection,
+  TestRunnerSection,
+  FailureLedgerSection,
+  GateG17Section,
+} from "./components/Phase17";
 
-function Footer({ g16 }: { g16: boolean }) {
+function Footer({ g17 }: { g17: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 16 of 18. A decision-support
-            design document. The app shell in §79 is a rehearsal: twelve pages, each bound to the
-            engines you approved, each tagging the state it touches by kind.
+            AI Digital Twin &amp; Career Intelligence System — Phase 17 of 18. A decision-support
+            design document. The suite in §83 turns seventeen revisions of promises into assertions —
+            green where proven, amber where Run 002 is still owed, and never faked.
           </p>
         </div>
         <div>
@@ -105,8 +111,8 @@ function Footer({ g16 }: { g16: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g16 ? "text-green" : "text-amber"}`}>
-            {g16 ? "G-16 PASSED → PHASE 17 (TESTING)" : "G-16 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g17 ? "text-green" : "text-amber"}`}>
+            {g17 ? "G-17 PASSED → PHASE 18 (FINALIZATION)" : "G-17 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -121,9 +127,9 @@ function Footer({ g16 }: { g16: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-15 are recorded as passed (REV A–O approved).
-  // G-16 is the live decision of this revision.
-  const [g16, setG16] = useState(false);
+  // Gates G-1 → G-16 are recorded as passed (REV A–P approved).
+  // G-17 is the live decision of this revision.
+  const [g17, setG17] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -132,8 +138,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g16={g16} />
-      <Opener g16={g16} />
+      <Header g17={g17} />
+      <Opener g17={g17} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -247,10 +253,16 @@ export default function App() {
         <PageMapSection />
         <AppShellSection />
         <StateCacheSection />
-        <GateG16Section g16={g16} onApprove={() => setG16(true)} />
+        <GateG16Section g16 onApprove={() => undefined} />
+
+        {/* Phase 17 — Testing */}
+        <TestMatrixSection />
+        <TestRunnerSection />
+        <FailureLedgerSection />
+        <GateG17Section g17={g17} onApprove={() => setG17(true)} />
       </main>
 
-      <Footer g16={g16} />
+      <Footer g17={g17} />
     </div>
   );
 }
