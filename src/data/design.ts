@@ -374,7 +374,8 @@ export const REV_LEDGER = [
   { rev: "REV K", phase: "Phase 11 — NLP Resume Intelligence", status: "APPROVED", tone: "green" as const, note: "Gate G-11 passed. Extraction is deterministic and evidence-tagged; the system transcribes claims and refuses to guess." },
   { rev: "REV L", phase: "Phase 12 — Job Matching", status: "APPROVED", tone: "green" as const, note: "Gate G-12 passed. The matcher is a fit gauge with the unknown named — never a hiring forecast. Intelligence stage closed." },
   { rev: "REV M", phase: "Phase 13 — Explainable AI", status: "APPROVED", tone: "green" as const, note: "Gate G-13 passed. Every output owns exactly one explanation method; SHAP waits for Run 002, and k-means gets none." },
-  { rev: "REV N", phase: "Phase 14 — The Digital Twin", status: "ISSUED", tone: "amber" as const, note: "Twin constitution, live console with versioned snapshots, defined readiness indicators, correction right. Awaiting gate G-14." },
+  { rev: "REV N", phase: "Phase 14 — The Digital Twin", status: "APPROVED", tone: "green" as const, note: "Gate G-14 passed. Five stores, a six-step write corridor, amend-never-erase — the twin is a mirror with a memory." },
+  { rev: "REV O", phase: "Phase 15 — The Future Simulator", status: "ISSUED", tone: "amber" as const, note: "Exactly-attributable what-if deltas, live simulator, the not-a-prophecy clause. Awaiting gate G-15." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
