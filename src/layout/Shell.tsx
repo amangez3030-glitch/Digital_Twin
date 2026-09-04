@@ -6,6 +6,7 @@ import { clearSession, getSession, type SessionUser } from "../lib/auth";
 import { useTilt } from "../hooks";
 import Backplates from "../components/Backplates";
 import ParticleField from "../components/ParticleField";
+import VideoBackdrop from "../components/VideoBackdrop";
 
 /* ---------- document-wide state (the final seal + workspace session) ---------- */
 
@@ -522,6 +523,7 @@ export default function Shell() {
         {/* ambient layers — base grid, cinematic plates, 3D particles, effects */}
         <div className="bg-blueprint" aria-hidden="true" />
         <Backplates path={pathname} />
+        <VideoBackdrop />
         <ParticleField />
         <div className="bg-scan" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />

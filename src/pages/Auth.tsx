@@ -1,7 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { DOC_META } from "../data/design";
 import { Corners } from "../components/ui";
+import Backplates from "../components/Backplates";
+import VideoBackdrop from "../components/VideoBackdrop";
+import ParticleField from "../components/ParticleField";
 import {
   EMAIL_RE,
   createSession,
@@ -33,23 +36,41 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [caps, setCaps] = useState(false);
+  const [locked, setLocked] = useState(0);
+
+  /* cooldown after repeated failures */
+  useEffect(() => {
+    if (locked <= 0) return;
+    const t = window.setTimeout(() => setLocked((l) => l - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [locked]);
+
+  const capsDetect = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (typeof e.getModifierState === "function") setCaps(e.getModifierState("CapsLock"));
+  };
 
   const strength = useMemo(() => passStrength(pass), [pass]);
 
-  const fail = (msg: string) => {
+  const fail = (msg: string, credential = false) => {
     setError(msg);
-    setAttempt((a) => a + 1);
+    setAttempt((a) => {
+      const next = a + 1;
+      if (credential && next >= 4) setLocked(15);
+      return next;
+    });
   };
 
   const enter = (user: StoredUser, verb: string) => {
     setBusy(true);
     createSession(user);
-    window.setTimeout(() => navigate("/", { replace: true }), 420);
+    window.setTimeout(() => navigate("/system", { replace: true }), 420);
     void verb;
   };
 
   const submit = () => {
     setError(null);
+    if (locked > 0) return fail(`COOLDOWN ACTIVE — the gate reopens in ${locked}s. Breathe; it is demo-grade, not spiteful.`);
     if (mode === "signin" && name.trim().length < 2) return fail("ENTER A NAME — the workspace is addressed to someone.");
     if (!EMAIL_RE.test(email.trim())) return fail("THAT EMAIL DOES NOT PARSE — check the format.");
     if (pass.length < 6) return fail("PASSWORD NEEDS 6+ CHARACTERS — this vault is demo-grade, not careless.");
@@ -69,7 +90,7 @@ export default function AuthPage() {
     } else {
       const user = findUser(email);
       if (!user || user.hash !== hashPass(email, pass)) {
-        return fail("ACCESS DENIED — email or passphrase not recognized.");
+        return fail("ACCESS DENIED — email or password not recognized.", true);
       }
       enter(user, "opened");
     }
@@ -97,8 +118,11 @@ export default function AuthPage() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="bg-blueprint" aria-hidden="true" />
-      <div className="bg-noise" aria-hidden="true" />
+      <Backplates path="/auth" />
+      <VideoBackdrop />
+      <ParticleField />
       <div className="bg-scan" aria-hidden="true" />
+      <div className="bg-noise" aria-hidden="true" />
 
       <div className="relative mx-auto grid min-h-screen w-full max-w-6xl gap-8 px-5 py-10 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-16">
         {/* ---------- clearance briefing ---------- */}
@@ -123,9 +147,10 @@ export default function AuthPage() {
             <span className="blink ml-2 inline-block h-[0.85em] w-[0.45em] translate-y-[0.1em] bg-cyan" aria-hidden="true" />
           </h1>
           <p className="mt-5 max-w-lg text-[14.5px] leading-relaxed text-dim">
-            The design document for the <span className="text-ink">AI Digital Twin &amp; Career
-            Intelligence System</span> — eighteen phases, eighty-nine sections, and a dozen live
-            engines — is held behind a local workspace gate. Identify yourself to open the dossier.
+            The working <span className="text-ink">AI Digital Twin &amp; Career Intelligence
+            System</span> — plus the eighteen-phase design dossier that explains it — sits behind a
+            local workspace gate. Identify yourself; the system opens first, the explanation is one
+            click away.
           </p>
 
           {/* ledger strip */}
@@ -225,7 +250,7 @@ export default function AuthPage() {
                 />
               </div>
               <div>
-                <label htmlFor="ac-pass" className="mono-label mb-1.5 block text-[8.5px] text-dim">PASSPHRASE</label>
+                <label htmlFor="ac-pass" className="mono-label mb-1.5 block text-[8.5px] text-dim">PASSWORD</label>
                 <div className="relative">
                   <input
                     id="ac-pass"
@@ -233,7 +258,8 @@ export default function AuthPage() {
                     value={pass}
                     onChange={(e) => setPass(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && submit()}
-                    placeholder={mode === "signin" ? "choose 6+ characters" : "your passphrase"}
+                    onKeyUp={capsDetect}
+                    placeholder={mode === "signin" ? "choose 6+ characters" : "your password"}
                     className={`${inputCls} pr-14`}
                     autoComplete={mode === "signin" ? "new-password" : "current-password"}
                   />
@@ -265,20 +291,34 @@ export default function AuthPage() {
               </div>
               {mode === "signin" && (
                 <div>
-                  <label htmlFor="ac-confirm" className="mono-label mb-1.5 block text-[8.5px] text-dim">CONFIRM PASSPHRASE</label>
-                  <input
-                    id="ac-confirm"
-                    type={showPass ? "text" : "password"}
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && submit()}
-                    placeholder="repeat it exactly"
-                    className={inputCls}
-                    autoComplete="new-password"
-                  />
-                </div>
+                <label htmlFor="ac-confirm" className="mono-label mb-1.5 block text-[8.5px] text-dim">CONFIRM PASSWORD</label>
+                <input
+                  id="ac-confirm"
+                  type={showPass ? "text" : "password"}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submit()}
+                  onKeyUp={capsDetect}
+                  placeholder="repeat it exactly"
+                  className={inputCls}
+                  autoComplete="new-password"
+                />                </div>
               )}
 
+              {caps && (
+                <p className="flex items-center gap-2 border border-amber/50 bg-amber/10 px-3 py-2 font-mono text-[10.5px] text-amber">
+                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M8 2 14 8l-2.2 2H10v4H6v-4H4.2L2 8Z" />
+                  </svg>
+                  CAPS LOCK IS ON — passwords are case-sensitive.
+                </p>
+              )}
+              {locked > 0 && (
+                <p className="flex items-center justify-between border border-rose/50 bg-rose/10 px-3 py-2.5 font-mono text-[11px] text-rose">
+                  <span>⏱ GATE COOLDOWN — too many failed attempts</span>
+                  <span className="display-head text-[13px]">{locked}s</span>
+                </p>
+              )}
               {error && (
                 <p className="border border-rose/50 bg-rose/10 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-rose">
                   ⨯ {error}
@@ -287,15 +327,17 @@ export default function AuthPage() {
 
               <button
                 onClick={submit}
-                disabled={busy}
+                disabled={busy || locked > 0}
                 className="group flex w-full items-center justify-center gap-3 border border-cyan bg-cyan/10 px-5 py-3.5 transition-all duration-200 hover:bg-cyan/20 hover:shadow-[0_0_30px_rgba(107,225,255,0.2)] active:translate-y-[1px] disabled:opacity-60"
               >
                 {busy ? (
                   <span className="mono-label text-[10.5px] text-cyan">GRANTING CLEARANCE…</span>
+                ) : locked > 0 ? (
+                  <span className="mono-label text-[10.5px] text-rose">LOCKED · {locked}s</span>
                 ) : (
                   <>
                     <span className="mono-label text-[10.5px] text-cyan">
-                      {mode === "login" ? "OPEN THE DOSSIER" : "CREATE WORKSPACE & ENTER"}
+                      {mode === "login" ? "OPEN THE SYSTEM" : "CREATE WORKSPACE & ENTER"}
                     </span>
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-cyan transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.6">
                       <path d="M2 8h11M9 3.5 13.5 8 9 12.5" />

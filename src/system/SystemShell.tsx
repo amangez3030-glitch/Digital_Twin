@@ -1,5 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { getSession } from "../lib/auth";
+import Backplates from "../components/Backplates";
+import VideoBackdrop from "../components/VideoBackdrop";
+import ParticleField from "../components/ParticleField";
 import { SysProvider, useSys, readinessFor } from "./profile";
 import { GAP_CAREERS } from "../components/Phase9";
 import { SysDashboard, SysTwin, SysCareers } from "./SysPages1";
@@ -137,7 +140,16 @@ export default function SystemShell() {
   const user = getSession()?.name ?? "Student";
   return (
     <SysProvider>
-      <SystemInner user={user} />
+      <div className="relative min-h-screen">
+        {/* ambient layers — hologram plate, video streams, 3D constellation */}
+        <div className="bg-blueprint" aria-hidden="true" />
+        <Backplates path="/system" />
+        <VideoBackdrop />
+        <ParticleField />
+        <div className="bg-scan" aria-hidden="true" />
+        <div className="bg-noise" aria-hidden="true" />
+        <SystemInner user={user} />
+      </div>
     </SysProvider>
   );
 }
