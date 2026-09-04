@@ -210,6 +210,12 @@ body {
 }
 .nest-scan { animation: nestscan 8s linear infinite; }
 
+/* Page transition inside the app-shell wireframe */
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* SHAP waterfall bars — geometry animates as the profile moves */
 .wf-bar { transition: x 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
 

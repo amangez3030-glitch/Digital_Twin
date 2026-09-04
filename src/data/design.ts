@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV N",
-  sheet: "14 / 14",
-  phase: "PHASE 14 — THE DIGITAL TWIN",
+  rev: "REV P",
+  sheet: "16 / 16",
+  phase: "PHASE 16 — STREAMLIT APPLICATION",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -321,8 +321,8 @@ export const PHASES: Phase[] = [
   { n: 12, stage: "Intelligence", name: "JD matching", weeks: "done", deliverable: "REV L: frozen matcher math (required 2×/preferred 1×), live JD matcher, skill-normalization reuse, 'match ≠ hiring' contract.", exit: "Match is a fit gauge, never a hiring prediction; disclaimer enforced in UI. PASSED at gate G-12" },
   { n: 13, stage: "Intelligence", name: "Explainable AI", weeks: "done", deliverable: "REV M: explanation matrix by output type, exact-Shapley live lab on an additive exhibit, XAI limits named, no-explain-no-publish rule.", exit: "Every published score carries a decomposition; SHAP awaits Run 002 by contract. PASSED at gate G-13" },
   { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "now", deliverable: "REV N: twin constitution (schema + validated write path + correction right), live console with versioned snapshots, five defined readiness indicators, growth timeline.", exit: "Twin stores only REV-D-validated fields; every indicator formula printed in-app ← THIS DOCUMENT, awaiting G-14" },
-  { n: 15, stage: "Application", name: "Future simulator", weeks: "0.5 wk", deliverable: "Scenario engine with before/after deltas; never writes to the twin.", exit: "Scenario labeling verified in UI" },
-  { n: 16, stage: "Application", name: "Streamlit application", weeks: "1.5 wk", deliverable: "12 pages wired to services; career path graph; advisor.", exit: "Demo script runs end-to-end cold" },
+  { n: 15, stage: "Application", name: "Future simulator", weeks: "done", deliverable: "REV O: exactly-attributable what-if deltas, live simulator, read-only replay, scenario journal, the not-a-prophecy clause.", exit: "Every delta traces to a moved slider; the label renders on every view. PASSED at gate G-15" },
+  { n: 16, stage: "Application", name: "Streamlit application", weeks: "now", deliverable: "REV P: twelve-page map bound to approved engines, living app-shell wireframe, state & caching contract, per-page ethics footer.", exit: "Every page cites the engine it composes; no page renders a score without its decomposition ← THIS DOCUMENT, awaiting G-16" },
   { n: 17, stage: "Application", name: "Testing", weeks: "1 wk", deliverable: "Data validation, model, UI and edge-case tests; security pass on uploads.", exit: "Suite green; failure modes documented" },
   { n: 18, stage: "Defense", name: "Finalization", weeks: "1 wk", deliverable: "README, technical report, architecture diagram, dataset docs, limitations, slides, viva Q&A.", exit: "Supervisor sign-off; defense-ready" },
 ];
@@ -375,7 +375,8 @@ export const REV_LEDGER = [
   { rev: "REV L", phase: "Phase 12 — Job Matching", status: "APPROVED", tone: "green" as const, note: "Gate G-12 passed. The matcher is a fit gauge with the unknown named — never a hiring forecast. Intelligence stage closed." },
   { rev: "REV M", phase: "Phase 13 — Explainable AI", status: "APPROVED", tone: "green" as const, note: "Gate G-13 passed. Every output owns exactly one explanation method; SHAP waits for Run 002, and k-means gets none." },
   { rev: "REV N", phase: "Phase 14 — The Digital Twin", status: "APPROVED", tone: "green" as const, note: "Gate G-14 passed. Five stores, a six-step write corridor, amend-never-erase — the twin is a mirror with a memory." },
-  { rev: "REV O", phase: "Phase 15 — The Future Simulator", status: "ISSUED", tone: "amber" as const, note: "Exactly-attributable what-if deltas, live simulator, the not-a-prophecy clause. Awaiting gate G-15." },
+  { rev: "REV O", phase: "Phase 15 — The Future Simulator", status: "APPROVED", tone: "green" as const, note: "Gate G-15 passed. Deltas are exactly attributable, scenarios never touch the twin, and the label is non-negotiable." },
+  { rev: "REV P", phase: "Phase 16 — The Streamlit Application", status: "ISSUED", tone: "amber" as const, note: "Twelve-page map bound to approved engines, living app-shell wireframe, state & caching contract, per-page ethics footer. Awaiting gate G-16." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";
