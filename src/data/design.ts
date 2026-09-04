@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV Q",
-  sheet: "17 / 17",
-  phase: "PHASE 17 — TESTING",
+  rev: "REV R",
+  sheet: "18 / 18",
+  phase: "PHASE 18 — FINALIZATION",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -323,8 +323,8 @@ export const PHASES: Phase[] = [
   { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "now", deliverable: "REV N: twin constitution (schema + validated write path + correction right), live console with versioned snapshots, five defined readiness indicators, growth timeline.", exit: "Twin stores only REV-D-validated fields; every indicator formula printed in-app ← THIS DOCUMENT, awaiting G-14" },
   { n: 15, stage: "Application", name: "Future simulator", weeks: "done", deliverable: "REV O: exactly-attributable what-if deltas, live simulator, read-only replay, scenario journal, the not-a-prophecy clause.", exit: "Every delta traces to a moved slider; the label renders on every view. PASSED at gate G-15" },
   { n: 16, stage: "Application", name: "Streamlit application", weeks: "done", deliverable: "REV P: twelve-page map bound to approved engines, living app-shell wireframe, state & caching contract, per-page ethics footer.", exit: "Every page cites the engine it composes; no page renders a score without its decomposition. PASSED at gate G-16" },
-  { n: 17, stage: "Application", name: "Testing", weeks: "now", deliverable: "REV Q: 28-test suite across six domains, live runner, the green-or-explain rule, documented failure modes.", exit: "Every promise from REV A–P is an executable assertion; PENDING is a status, not a shame ← THIS DOCUMENT, awaiting G-17" },
-  { n: 18, stage: "Defense", name: "Finalization", weeks: "1 wk", deliverable: "README, technical report, architecture diagram, dataset docs, limitations, slides, viva Q&A.", exit: "Supervisor sign-off; defense-ready" },
+  { n: 17, stage: "Application", name: "Testing", weeks: "done", deliverable: "REV Q: 28-test suite across six domains, live runner, the green-or-explain rule, documented failure modes.", exit: "Every promise from REV A–P is an executable assertion; PENDING is a status, not a shame. PASSED at gate G-17" },
+  { n: 18, stage: "Defense", name: "Finalization", weeks: "now", deliverable: "REV R: the deliverables vault, a rehearseable demo script, viva defense prep, and the final seal.", exit: "← THIS DOCUMENT · the last revision — seal it or send it back" },
 ];
 
 export const STAGES = ["Foundations", "Models", "Intelligence", "Application", "Defense"];
@@ -377,7 +377,8 @@ export const REV_LEDGER = [
   { rev: "REV N", phase: "Phase 14 — The Digital Twin", status: "APPROVED", tone: "green" as const, note: "Gate G-14 passed. Five stores, a six-step write corridor, amend-never-erase — the twin is a mirror with a memory." },
   { rev: "REV O", phase: "Phase 15 — The Future Simulator", status: "APPROVED", tone: "green" as const, note: "Gate G-15 passed. Deltas are exactly attributable, scenarios never touch the twin, and the label is non-negotiable." },
   { rev: "REV P", phase: "Phase 16 — The Streamlit Application", status: "APPROVED", tone: "green" as const, note: "Gate G-16 passed. Twelve pages, one lens: the UI composes engines, never invents a score of its own." },
-  { rev: "REV Q", phase: "Phase 17 — Testing", status: "ISSUED", tone: "amber" as const, note: "28-test suite across six domains, live runner, green-or-explain rule, failure-mode ledger. Awaiting gate G-17." },
+  { rev: "REV Q", phase: "Phase 17 — Testing", status: "APPROVED", tone: "green" as const, note: "Gate G-17 passed. Seventeen revisions of promises became 28 assertions — 21 green, 7 honestly pending Run 002." },
+  { rev: "REV R", phase: "Phase 18 — Finalization", status: "ISSUED", tone: "amber" as const, note: "The final revision: deliverables vault, demo script, defense prep, and the seal. Awaiting the last decision." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";

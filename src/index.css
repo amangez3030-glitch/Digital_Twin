@@ -210,6 +210,15 @@ body {
 }
 .nest-scan { animation: nestscan 8s linear infinite; }
 
+/* The final seal — slams in with a slight rebound */
+@keyframes sealin {
+  0%   { opacity: 0; transform: rotate(-14deg) scale(2.6); }
+  55%  { opacity: 1; transform: rotate(-8deg) scale(0.94); }
+  75%  { transform: rotate(-8deg) scale(1.05); }
+  100% { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+.seal-in { animation: sealin 0.65s cubic-bezier(0.22, 1.4, 0.36, 1) forwards; }
+
 /* Page transition inside the app-shell wireframe */
 @keyframes fadeup {
   from { opacity: 0; transform: translateY(8px); }

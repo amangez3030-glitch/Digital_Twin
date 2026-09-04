@@ -20,7 +20,7 @@ function Stat({ value, label, suffix, delay }: { value: number; label: string; s
   );
 }
 
-export default function Opener({ g17 }: { g17: boolean }) {
+export default function Opener({ g18 }: { g18: boolean }) {
   return (
     <header className="relative mx-auto w-full max-w-6xl px-5 pt-28 sm:px-8 md:pt-36">
       {/* breadcrumb strip */}
@@ -33,10 +33,10 @@ export default function Opener({ g17 }: { g17: boolean }) {
         </p>
         <span
           className={`mono-label ml-auto border px-2.5 py-1 text-[9.5px] ${
-            g17 ? "border-green/50 text-green" : "border-amber/50 text-amber"
+            g18 ? "border-green/60 bg-green/10 text-green" : "border-amber/50 text-amber"
           }`}
         >
-          {g17 ? "G-17 PASSED ✓" : "G-1→G-16 PASSED · G-17 PENDING"}
+          {g18 ? "PROJECT ARCHIVED · ALL 18 PHASES ✓" : "G-1→G-17 PASSED · FINAL SEAL PENDING"}
         </span>
       </div>
 
@@ -92,7 +92,7 @@ export default function Opener({ g17 }: { g17: boolean }) {
           ["REV", DOC_META.rev],
           ["SCALE", DOC_META.scale],
           ["SHEET", DOC_META.sheet],
-          ["PHASE", "17 / 18"],
+          ["PHASE", g18 ? "18 / 18 ✓" : "18 / 18"],
           ["DRAWN BY", "ML STUDENT"],
         ].map(([k, v]) => (
           <div key={k} className="-ml-px -mt-px border border-line bg-panel/70 px-4 py-3">

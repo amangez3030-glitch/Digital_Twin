@@ -87,9 +87,13 @@ export const SECTIONS: { id: string; n: string; label: string }[] = [
   { id: "s83", n: "83", label: "Live Runner" },
   { id: "s84", n: "84", label: "Failure Ledger" },
   { id: "s85", n: "85", label: "Gate G-17" },
+  { id: "s86", n: "86", label: "The Vault" },
+  { id: "s87", n: "87", label: "Demo Script" },
+  { id: "s88", n: "88", label: "Viva Prep" },
+  { id: "s89", n: "89", label: "Final Seal" },
 ];
 
-export default function Header({ g17 }: { g17: boolean }) {
+export default function Header({ g18 }: { g18: boolean }) {
   const active = useScrollSpy(SECTIONS.map((s) => s.id));
 
   return (
@@ -110,10 +114,10 @@ export default function Header({ g17 }: { g17: boolean }) {
           <span className="mono-label hidden text-faint md:block">{DOC_META.docNo} · {DOC_META.rev}</span>
           <span
             className={`mono-label ml-auto border px-2 py-[3px] text-[9px] ${
-              g17 ? "border-green/50 text-green" : "border-amber/50 text-amber"
+              g18 ? "border-green/60 bg-green/10 text-green" : "border-amber/50 text-amber"
             }`}
           >
-            {g17 ? "G-17 PASSED · PHASE 18 NEXT" : "PHASE 17 · G-17 PENDING"}
+            {g18 ? "ARCHIVED · 18/18 ✓" : "PHASE 18 · FINAL SEAL PENDING"}
           </span>
         </div>
       </div>

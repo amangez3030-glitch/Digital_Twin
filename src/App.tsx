@@ -87,21 +87,27 @@ import {
   FailureLedgerSection,
   GateG17Section,
 } from "./components/Phase17";
+import {
+  VaultSection,
+  DemoSection,
+  VivaSection,
+  SealSection,
+} from "./components/Phase18";
 
-function Footer({ g17 }: { g17: boolean }) {
+function Footer({ g18 }: { g18: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 17 of 18. A decision-support
-            design document. The suite in §83 turns seventeen revisions of promises into assertions —
-            green where proven, amber where Run 002 is still owed, and never faked.
+            AI Digital Twin &amp; Career Intelligence System — {g18 ? "archived at REV R, all 18 of 18 phases complete" : "Phase 18 of 18, the final revision"}. A decision-support
+            design document that proved honesty is a feature: every engine explainable, every refusal
+            named, every number traceable to a §ref you can check.
           </p>
         </div>
         <div>
-          <p className="mono-label text-faint">Standing rules carried into every phase</p>
+          <p className="mono-label text-faint">Standing rules, kept to the last line</p>
           <ul className="mt-2 space-y-1 font-mono text-[11.5px] text-faint">
             <li><span className="text-rose">01</span> never fabricate data or metrics</li>
             <li><span className="text-rose">02</span> never hide an error or a failed baseline</li>
@@ -110,9 +116,9 @@ function Footer({ g17 }: { g17: boolean }) {
           </ul>
         </div>
         <div className="md:text-right">
-          <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g17 ? "text-green" : "text-amber"}`}>
-            {g17 ? "G-17 PASSED → PHASE 18 (FINALIZATION)" : "G-17 PENDING SUPERVISOR APPROVAL"}
+          <p className="mono-label text-faint">Final status</p>
+          <p className={`mt-2 font-mono text-[12.5px] ${g18 ? "text-green" : "text-amber"}`}>
+            {g18 ? "✓ ARCHIVED — READY FOR DEFENSE" : "FINAL SEAL PENDING AT §89"}
           </p>
           <a
             href="#top"
@@ -127,9 +133,9 @@ function Footer({ g17 }: { g17: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-16 are recorded as passed (REV A–P approved).
-  // G-17 is the live decision of this revision.
-  const [g17, setG17] = useState(false);
+  // Gates G-1 → G-17 are recorded as passed (REV A–Q approved).
+  // The final seal (G-18 / REV R) is the one remaining decision.
+  const [sealed, setSealed] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -138,8 +144,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g17={g17} />
-      <Opener g17={g17} />
+      <Header g18={sealed} />
+      <Opener g18={sealed} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -259,10 +265,16 @@ export default function App() {
         <TestMatrixSection />
         <TestRunnerSection />
         <FailureLedgerSection />
-        <GateG17Section g17={g17} onApprove={() => setG17(true)} />
+        <GateG17Section g17 onApprove={() => undefined} />
+
+        {/* Phase 18 — Finalization */}
+        <VaultSection />
+        <DemoSection />
+        <VivaSection />
+        <SealSection sealed={sealed} onSeal={() => setSealed(true)} />
       </main>
 
-      <Footer g17={g17} />
+      <Footer g18={sealed} />
     </div>
   );
 }
