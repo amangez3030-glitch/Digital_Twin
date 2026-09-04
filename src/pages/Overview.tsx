@@ -1,11 +1,87 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DOC_META, PHASES, REV_LEDGER } from "../data/design";
 import { Reveal, Tag, Corners } from "../components/ui";
-import { useCountUp, useReveal } from "../hooks";
+import { useCountUp, useReveal, useTilt } from "../hooks";
 import Schematic from "../components/Schematic";
-import { PageHero } from "../layout/Shell";
 import { useDoc } from "../layout/Shell";
 import { PAGES, PHASE_PAGE } from "./registry";
+
+/* ============================================================
+   The 3D dossier — all eleven sheets fanned in perspective.
+   Tilts with the pointer, lifts on hover, opens the sheet.
+   ============================================================ */
+
+function DossierStack() {
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLDivElement>(8);
+  const [hov, setHov] = useState<number | null>(null);
+
+  return (
+    <div className="relative h-[340px] select-none sm:h-[400px]" style={{ perspective: "1500px" }}>
+      {/* table shadow */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-6 left-1/2 h-10 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/50 blur-2xl"
+      />
+      <div
+        ref={ref}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        className="tilt preserve-3d absolute inset-0"
+      >
+        <div
+          className="preserve-3d float-z absolute inset-0"
+          style={{ transform: "rotateX(54deg) rotateZ(-26deg) scale(0.82) translateZ(-30px)" }}
+        >
+          {PAGES.map((p, i) => {
+            const active = hov === i;
+            return (
+              <Link
+                to={p.path}
+                key={p.path}
+                onPointerEnter={() => setHov(i)}
+                onPointerLeave={() => setHov(null)}
+                aria-label={`Open sheet ${p.code} — ${p.label}`}
+                className="sheet-fade absolute left-1/2 top-1/2 block w-[196px] border bg-[#0b1626] sm:w-[216px]"
+                style={{
+                  transform: `translate(-50%, -50%) translateZ(${i * 15 + (active ? 30 : 0)}px) rotate(${
+                    (i % 2 ? 1.4 : -1.4) + (i - 5) * 0.55
+                  }deg)`,
+                  borderColor: active ? "#6be1ff" : "#22375a",
+                  boxShadow: active
+                    ? "0 0 34px rgba(107,225,255,0.3), 0 22px 40px rgba(0,0,0,0.55)"
+                    : "0 16px 30px rgba(0,0,0,0.5)",
+                  transition: "transform 0.28s cubic-bezier(0.22,1,0.36,1), border-color 0.2s, box-shadow 0.28s",
+                  animationDelay: `${i * 55}ms`,
+                }}
+              >
+                <div className={`h-[3px] w-full ${p.status === "APPROVED" ? "bg-green/70" : "bg-amber/90"}`} />
+                <div className="p-3">
+                  <div className="flex items-baseline justify-between">
+                    <span className={`mono-label text-[9.5px] ${active ? "text-cyan" : "text-amber"}`}>{p.code}</span>
+                    <span className="font-mono text-[8px] text-faint">{p.status === "APPROVED" ? "✓ APPR" : "SEAL"}</span>
+                  </div>
+                  <p className={`display-head mt-1 text-[13.5px] leading-tight ${active ? "text-cyan" : "text-ink"}`}>
+                    {p.label}
+                  </p>
+                  <p className="mt-0.5 font-mono text-[8.5px] text-faint">{p.phases} · {p.revs}</p>
+                  <div className="mt-2.5 space-y-1" aria-hidden="true">
+                    <div className="h-[3px] w-4/5 bg-line/60" />
+                    <div className="h-[3px] w-3/5 bg-line/40" />
+                    <div className="h-[3px] w-2/3 bg-line/30" />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+      <p className="mono-label pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] text-faint">
+        THE DOSSIER · 11 SHEETS · HOVER TO LIFT · CLICK TO OPEN
+      </p>
+    </div>
+  );
+}
 
 function Stat({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) {
   const { ref, visible } = useReveal<HTMLDivElement>();
@@ -170,25 +246,41 @@ function Ledger() {
   );
 }
 
+function TiltTitleBlock() {
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLDivElement>(3);
+  return (
+    <div ref={ref} onPointerMove={onPointerMove} onPointerLeave={onPointerLeave} className="tilt">
+      <TitleBlock />
+    </div>
+  );
+}
+
 export default function Overview() {
   const { sealed } = useDoc();
   return (
     <>
-      <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 pt-28 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:pt-32">
-        <TitleBlock />
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-6 px-5 pt-24 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:pt-14">
+        <TiltTitleBlock />
         <Reveal delay={120}>
-          <div className="panel relative h-full p-5">
-            <p className="mono-label mb-2 text-faint">System schematic — inputs → twin → engines</p>
-            <Schematic />
-          </div>
+          <DossierStack />
         </Reveal>
       </div>
 
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-3 px-5 pt-8 sm:px-8 lg:grid-cols-4">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-3 px-5 pt-10 sm:px-8 lg:grid-cols-4">
         <Stat value={18} label="PHASES · EACH WITH A GATE" />
         <Stat value={89} label="SECTIONS IN THIS DOSSIER" />
         <Stat value={12} label="CAREERS · 12 SKILLS · ONE LEXICON" />
         <Stat value={28} label="TESTS IN THE SUITE" suffix="*" />
+      </div>
+
+      <div className="mx-auto w-full max-w-6xl px-5 pt-12 sm:px-8">
+        <Reveal>
+          <div className="panel relative p-5">
+            <Corners color="#ffc266" />
+            <p className="mono-label mb-2 text-faint">System schematic — inputs → twin → engines → outputs</p>
+            <Schematic />
+          </div>
+        </Reveal>
       </div>
 
       <PhaseMap />

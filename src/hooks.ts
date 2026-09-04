@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 
 /** Adds `.in` behavior: returns a ref + visible flag, triggers once. */
 export function useReveal<T extends HTMLElement>(threshold = 0.15) {
@@ -57,6 +58,24 @@ export function useScrollSpy(ids: string[]) {
 }
 
 /** Animates 0 → target once `start` becomes true. */
+/* Pointer-driven 3D tilt — perspective transform follows the cursor. */
+export function useTilt<T extends HTMLElement>(max = 5) {
+  const ref = useRef<T | null>(null);
+  const onPointerMove = (e: ReactPointerEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `perspective(950px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg)`;
+  };
+  const onPointerLeave = () => {
+    const el = ref.current;
+    if (el) el.style.transform = "perspective(950px) rotateX(0deg) rotateY(0deg)";
+  };
+  return { ref, onPointerMove, onPointerLeave };
+}
+
 export function useCountUp(target: number, start: boolean, duration = 1100) {
   const [value, setValue] = useState(0);
 

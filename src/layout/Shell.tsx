@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DOC_META } from "../data/design";
-import { PAGES, pageByPath } from "../pages/registry";
+import { PAGES, NAV_GROUPS, pageByPath } from "../pages/registry";
 import { clearSession, getSession, type SessionUser } from "../lib/auth";
+import { useTilt } from "../hooks";
 
 /* ---------- document-wide state (the final seal + workspace session) ---------- */
 
@@ -30,7 +31,7 @@ function ScrollToTop() {
   return null;
 }
 
-/* ---------- top navigation ---------- */
+/* ---------- shared bits ---------- */
 
 function CrosshairMark({ className = "h-6 w-6" }: { className?: string }) {
   return (
@@ -42,97 +43,242 @@ function CrosshairMark({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-function TopNav() {
-  const { sealed, user, logout } = useDoc();
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
+function SealMeter({ sealed }: { sealed: boolean }) {
+  const pct = sealed ? 100 : Math.round((17 / 18) * 100);
   return (
-    <div
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-        scrolled ? "border-line bg-[rgba(7,13,24,0.94)] shadow-[0_10px_40px_rgba(0,0,0,0.45)]" : "border-line/70 bg-[rgba(7,13,24,0.82)]"
-      }`}
-    >
-      {/* status row */}
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 pt-2.5 sm:px-8">
-        <Link to="/" className="group flex items-center gap-2.5">
-          <CrosshairMark className="h-6 w-6 text-cyan transition-transform duration-500 group-hover:rotate-90" />
-          <span className="display-head text-[15px] tracking-wide text-ink">
+    <div>
+      <div className="flex items-center justify-between">
+        <p className="mono-label text-[8px] text-faint">GATE PROGRESS</p>
+        <p className={`mono-label text-[8px] ${sealed ? "text-green" : "text-amber"}`}>{sealed ? "18/18" : "17/18"}</p>
+      </div>
+      <div className="mt-1.5 h-[3px] w-full bg-line/50">
+        <div
+          className={`h-full transition-all duration-700 ${sealed ? "bg-green" : "bg-amber"}`}
+          style={{ width: `${pct}%`, boxShadow: `0 0 8px ${sealed ? "rgba(124,231,165,0.6)" : "rgba(255,194,102,0.5)"}` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function UserChip({ user, onLogout, compact = false }: { user: SessionUser; onLogout: () => void; compact?: boolean }) {
+  return (
+    <div className="group flex items-center gap-2.5 border border-line/80 bg-base/50 p-2.5 transition-colors duration-200 hover:border-cyan/40">
+      <span
+        className={`flex h-7 w-7 shrink-0 items-center justify-center font-mono text-[12px] font-bold ${
+          user.kind === "supervisor" ? "bg-amber/20 text-amber" : "bg-cyan/20 text-cyan"
+        }`}
+      >
+        {user.name.trim().charAt(0).toUpperCase()}
+      </span>
+      {!compact && (
+        <span className="min-w-0 flex-1">
+          <span className="block truncate font-mono text-[11.5px] text-ink">{user.name}</span>
+          <span className="mono-label text-[7.5px] text-faint">
+            {user.kind === "supervisor" ? "REVIEW CLEARANCE" : "LOCAL WORKSPACE"} · ON-DEVICE
+          </span>
+        </span>
+      )}
+      <button
+        onClick={onLogout}
+        title="Sign out of the local workspace"
+        className="mono-label shrink-0 border border-line/70 px-2 py-1 text-[8px] text-faint transition-all duration-200 hover:border-rose/60 hover:bg-rose/10 hover:text-rose"
+      >
+        OUT
+      </button>
+    </div>
+  );
+}
+
+/* ---------- the sheet index (used by sidebar + drawer) ---------- */
+
+function SheetNav({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <nav aria-label="Document sheets" className="flex flex-col gap-4">
+      {NAV_GROUPS.map((g) => (
+        <div key={g.label}>
+          <p className="mono-label mb-1.5 px-2 text-[7.5px] tracking-[0.28em] text-faint">{g.label}</p>
+          <div className="flex flex-col gap-0.5">
+            {g.paths.map((path) => {
+              const p = PAGES.find((x) => x.path === path)!;
+              return (
+                <NavLink
+                  key={p.path}
+                  to={p.path}
+                  end={p.path === "/"}
+                  onClick={onNavigate}
+                  className={({ isActive }) =>
+                    `group relative flex items-center gap-2.5 px-2 py-2 transition-all duration-200 ${
+                      isActive ? "bg-cyan/[0.07]" : "hover:bg-cyan/[0.04]"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span
+                        className={`absolute inset-y-1 left-0 w-[2.5px] origin-top transition-transform duration-300 ${
+                          isActive ? "scale-y-100 bg-cyan" : "scale-y-0 bg-line group-hover:scale-y-50"
+                        }`}
+                      />
+                      <span
+                        className={`mono-label w-6 shrink-0 text-center text-[9px] ${
+                          isActive ? "text-amber" : "text-faint group-hover:text-dim"
+                        }`}
+                      >
+                        {p.code}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={`mono-label block text-[10px] tracking-[0.12em] ${
+                            isActive ? "text-cyan" : "text-dim group-hover:text-ink"
+                          }`}
+                        >
+                          {p.label.toUpperCase()}
+                        </span>
+                        <span className="mono-label block truncate text-[7.5px] text-faint">{p.phases} · {p.revs}</span>
+                      </span>
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          p.status === "APPROVED" ? "bg-green/70" : "bg-amber/80"
+                        }`}
+                        title={p.status}
+                      />
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+/* ---------- desktop sidebar ---------- */
+
+function Sidebar({ prog }: { prog: number }) {
+  const { sealed, user, logout } = useDoc();
+  return (
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[268px] flex-col border-r border-line bg-[#0a1424]/95 lg:flex">
+      {/* masthead */}
+      <Link to="/" className="group flex items-center gap-2.5 border-b border-line px-5 py-4">
+        <CrosshairMark className="h-7 w-7 text-cyan transition-transform duration-500 group-hover:rotate-90" />
+        <span>
+          <span className="display-head block text-[15px] tracking-wide text-ink">
             {DOC_META.code}
             <span className="text-faint"> / SD</span>
           </span>
-        </Link>
-        <span className="mono-label hidden text-faint md:block">
-          {DOC_META.docNo} · {DOC_META.rev}
-        </span>
-        <span className="mono-label hidden border border-line px-2 py-[3px] text-[9px] text-dim lg:block">
-          18 PHASES · 89 SECTIONS
+          <span className="mono-label block text-[7.5px] text-faint">
+            {DOC_META.docNo} · {DOC_META.rev} · 11 SHEETS
+          </span>
         </span>
         <span
-          className={`mono-label ml-auto border px-2 py-[3px] text-[9px] transition-colors duration-300 ${
+          className={`mono-label ml-auto border px-1.5 py-1 text-[7.5px] ${
             sealed ? "border-green/60 bg-green/10 text-green" : "border-amber/50 text-amber"
           }`}
         >
-          {sealed ? "ARCHIVED · 18/18 ✓" : "SEAL PENDING · G-18"}
+          {sealed ? "SEALED" : "G-18"}
         </span>
-        {user && (
-          <span className="group flex items-center gap-2 border border-line/80 bg-base/50 py-[3px] pl-2.5 pr-1 transition-colors duration-200 hover:border-cyan/50">
-            <span
-              className={`flex h-4 w-4 items-center justify-center font-mono text-[9px] font-bold ${
-                user.kind === "supervisor" ? "bg-amber/20 text-amber" : "bg-cyan/20 text-cyan"
-              }`}
-            >
-              {user.name.trim().charAt(0).toUpperCase()}
-            </span>
-            <span className="mono-label hidden text-[8.5px] text-dim sm:block">
-              {user.name.split(" ")[0]}
-              <span className="text-faint"> · {user.kind === "supervisor" ? "REVIEW" : "LOCAL"}</span>
-            </span>
-            <button
-              onClick={logout}
-              title="Sign out of the local workspace"
-              className="mono-label border border-line/70 px-1.5 py-[2px] text-[8px] text-faint transition-all duration-200 hover:border-rose/60 hover:text-rose"
-            >
-              OUT
-            </button>
-          </span>
-        )}
+      </Link>
+
+      {/* sheet index */}
+      <div className="no-scrollbar flex-1 overflow-y-auto px-3 py-5">
+        <SheetNav />
       </div>
 
-      {/* page rail */}
-      <nav className="no-scrollbar mx-auto mt-2 flex max-w-6xl items-center gap-1 overflow-x-auto px-5 pb-2 sm:px-8" aria-label="Pages">
-        {PAGES.map((p) => (
-          <NavLink
-            key={p.path}
-            to={p.path}
-            end={p.path === "/"}
-            className={({ isActive }) =>
-              `group relative shrink-0 px-2.5 py-1.5 transition-colors duration-200 ${
-                isActive ? "text-cyan" : "text-faint hover:text-dim"
-              }`
-            }
+      {/* depth + seal + user */}
+      <div className="space-y-3.5 border-t border-line px-4 py-4">
+        <div>
+          <div className="flex items-center justify-between">
+            <p className="mono-label text-[8px] text-faint">SHEET DEPTH</p>
+            <p className="mono-label text-[8px] text-cyan">{Math.round(prog * 100)}%</p>
+          </div>
+          <div className="mt-1.5 h-[3px] w-full bg-line/50">
+            <div className="h-full bg-cyan transition-[width] duration-150" style={{ width: `${prog * 100}%` }} />
+          </div>
+        </div>
+        <SealMeter sealed={sealed} />
+        {user && <UserChip user={user} onLogout={logout} />}
+      </div>
+    </aside>
+  );
+}
+
+/* ---------- mobile top bar + drawer ---------- */
+
+function MobileBar({ onOpen }: { onOpen: () => void }) {
+  const { sealed } = useDoc();
+  return (
+    <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-3 border-b border-line bg-[rgba(7,13,24,0.94)] px-4 lg:hidden">
+      <button
+        onClick={onOpen}
+        aria-label="Open sheet index"
+        className="flex h-9 w-9 items-center justify-center border border-line text-dim transition-colors hover:border-cyan hover:text-cyan"
+      >
+        <svg viewBox="0 0 18 18" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <path d="M2.5 4.5h13M2.5 9h13M2.5 13.5h8" />
+        </svg>
+      </button>
+      <Link to="/" className="display-head text-[14px] text-ink">
+        {DOC_META.code}
+        <span className="text-faint"> / SD</span>
+      </Link>
+      <span className="mono-label ml-auto text-[8px] text-faint">{DOC_META.rev}</span>
+      <span
+        className={`mono-label border px-1.5 py-1 text-[7.5px] ${
+          sealed ? "border-green/60 bg-green/10 text-green" : "border-amber/50 text-amber"
+        }`}
+      >
+        {sealed ? "SEALED" : "G-18"}
+      </span>
+    </div>
+  );
+}
+
+function Drawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { sealed, user, logout } = useDoc();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div className={open ? "" : "pointer-events-none"} aria-hidden={!open}>
+      <div
+        className={`fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 lg:hidden ${open ? "opacity-100" : "opacity-0"}`}
+        onClick={onClose}
+      />
+      <div
+        className={`fixed inset-y-0 left-0 z-[70] flex w-[290px] flex-col border-r border-line bg-[#0a1424] transition-transform duration-300 ease-out lg:hidden ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center gap-2.5 border-b border-line px-5 py-4">
+          <CrosshairMark className="h-6 w-6 text-cyan" />
+          <span className="display-head text-[14px] text-ink">
+            {DOC_META.code}
+            <span className="text-faint"> / SD</span>
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Close sheet index"
+            className="ml-auto flex h-8 w-8 items-center justify-center border border-line text-faint transition-colors hover:border-rose hover:text-rose"
           >
-            {({ isActive }) => (
-              <>
-                <span className="mono-label mr-1.5 text-[8.5px]" style={{ color: isActive ? "#ffc266" : undefined }}>
-                  {p.code}
-                </span>
-                <span className="mono-label text-[9.5px] tracking-[0.14em]">{p.label.toUpperCase()}</span>
-                <span
-                  className={`absolute inset-x-2 -bottom-0.5 h-[2px] origin-left transition-transform duration-300 ${
-                    isActive ? "scale-x-100 bg-cyan" : "scale-x-0 bg-line group-hover:scale-x-100"
-                  }`}
-                />
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
+            </svg>
+          </button>
+        </div>
+        <div className="no-scrollbar flex-1 overflow-y-auto px-3 py-5">
+          <SheetNav onNavigate={onClose} />
+        </div>
+        <div className="space-y-3.5 border-t border-line px-4 py-4">
+          <SealMeter sealed={sealed} />
+          {user && <UserChip user={user} onLogout={() => { onClose(); logout(); }} />}
+        </div>
+      </div>
     </div>
   );
 }
@@ -163,11 +309,11 @@ export function PageHero({
   };
 
   return (
-    <header className="relative mx-auto w-full max-w-6xl overflow-hidden px-5 pb-10 pt-32 sm:px-8 md:pt-36">
+    <header className="relative mx-auto w-full max-w-6xl overflow-hidden px-5 pb-10 pt-28 sm:px-8 lg:pt-16">
       {/* giant phase watermark */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -right-4 top-16 select-none font-mono text-[9rem] font-bold leading-none text-line/25 sm:text-[13rem] md:top-10"
+        className="pointer-events-none absolute -right-4 top-20 select-none font-mono text-[9rem] font-bold leading-none text-line/25 sm:text-[13rem] lg:top-6"
       >
         {phaseWatermark}
       </span>
@@ -211,9 +357,33 @@ export function PageHero({
   );
 }
 
-/* ---------- prev / next pager ---------- */
+/* ---------- prev / next pager with 3D tilt ---------- */
 
-export function Pager({ path }: { path: string }) {
+function PagerCard({ to, code, title, meta, dir }: { to: string; code: string; title: string; meta: string; dir: "prev" | "next" }) {
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLAnchorElement>(4);
+  return (
+    <Link
+      ref={ref}
+      to={to}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      className={`tilt group border border-line bg-base/40 p-4 hover:border-cyan/50 hover:shadow-[0_18px_40px_rgba(0,0,0,0.45),0_0_24px_rgba(107,225,255,0.08)] ${
+        dir === "next" ? "text-right" : ""
+      }`}
+    >
+      <p className={`mono-label text-[8.5px] text-faint transition-colors ${dir === "prev" ? "group-hover:text-cyan" : "group-hover:text-amber"}`}>
+        {dir === "prev" ? "← Previous sheet" : "Next sheet →"}
+      </p>
+      <p className="display-head mt-1.5 text-lg text-ink">
+        <span className="mr-2 font-mono text-[11px] text-amber">{code}</span>
+        {title}
+      </p>
+      <p className="mono-label mt-1 text-[8.5px] text-faint">{meta}</p>
+    </Link>
+  );
+}
+
+function Pager({ path }: { path: string }) {
   const idx = PAGES.findIndex((p) => p.path === path);
   const prev = idx > 0 ? PAGES[idx - 1] : undefined;
   const next = idx < PAGES.length - 1 ? PAGES[idx + 1] : undefined;
@@ -221,32 +391,12 @@ export function Pager({ path }: { path: string }) {
   return (
     <div className="mx-auto mt-20 grid w-full max-w-6xl gap-3 px-5 sm:grid-cols-2 sm:px-8">
       {prev ? (
-        <Link
-          to={prev.path}
-          className="group border border-line bg-base/40 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan/50 hover:shadow-[0_0_24px_rgba(107,225,255,0.08)]"
-        >
-          <p className="mono-label text-[8.5px] text-faint transition-colors group-hover:text-cyan">← Previous sheet</p>
-          <p className="display-head mt-1.5 text-lg text-ink">
-            <span className="mr-2 font-mono text-[11px] text-amber">{prev.code}</span>
-            {prev.title}
-          </p>
-          <p className="mono-label mt-1 text-[8.5px] text-faint">{prev.phases} · {prev.revs}</p>
-        </Link>
+        <PagerCard to={prev.path} code={prev.code} title={prev.title} meta={`${prev.phases} · ${prev.revs}`} dir="prev" />
       ) : (
         <div className="hidden sm:block" />
       )}
       {next && (
-        <Link
-          to={next.path}
-          className="group border border-line bg-base/40 p-4 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-amber/50 hover:shadow-[0_0_24px_rgba(255,194,102,0.08)] sm:col-start-2"
-        >
-          <p className="mono-label text-[8.5px] text-faint transition-colors group-hover:text-amber">Next sheet →</p>
-          <p className="display-head mt-1.5 text-lg text-ink">
-            <span className="mr-2 font-mono text-[11px] text-amber">{next.code}</span>
-            {next.title}
-          </p>
-          <p className="mono-label mt-1 text-[8.5px] text-faint">{next.phases} · {next.revs}</p>
-        </Link>
+        <PagerCard to={next.path} code={next.code} title={next.title} meta={`${next.phases} · ${next.revs}`} dir="next" />
       )}
     </div>
   );
@@ -298,6 +448,8 @@ function SiteFooter() {
 export default function Shell() {
   const [sealed, setSealed] = useState(false);
   const [user, setUser] = useState<SessionUser | null>(() => getSession());
+  const [drawer, setDrawer] = useState(false);
+  const [prog, setProg] = useState(0);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -306,6 +458,27 @@ export default function Shell() {
     setUser(null);
     navigate("/auth", { replace: true });
   };
+
+  /* sheet-depth meter */
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - window.innerHeight;
+        setProg(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [pathname]);
 
   return (
     <DocCtx.Provider value={{ sealed, seal: () => setSealed(true), user, logout }}>
@@ -316,13 +489,19 @@ export default function Shell() {
         <div className="bg-noise" aria-hidden="true" />
         <div className="bg-scan" aria-hidden="true" />
 
-        <TopNav />
-        {/* route transition keyed by path */}
-        <main key={pathname} className="pagein">
-          <Outlet />
-        </main>
-        <Pager path={pageByPath(pathname) ? pathname : "/"} />
-        <SiteFooter />
+        <Sidebar prog={prog} />
+        <MobileBar onOpen={() => setDrawer(true)} />
+        <Drawer open={drawer} onClose={() => setDrawer(false)} />
+
+        {/* content column */}
+        <div className="lg:pl-[268px]">
+          {/* route transition keyed by path */}
+          <main key={pathname} className="pagein">
+            <Outlet />
+          </main>
+          <Pager path={pageByPath(pathname) ? pathname : "/"} />
+          <SiteFooter />
+        </div>
       </div>
     </DocCtx.Provider>
   );

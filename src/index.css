@@ -183,6 +183,26 @@ body {
   40%, 60% { transform: translateX(4px); }
 }
 .shake { animation: shakex 0.45s ease both; }
+
+/* ---------- 3D helpers ---------- */
+.preserve-3d { transform-style: preserve-3d; }
+.tilt {
+  transition: transform 0.16s ease-out;
+  will-change: transform;
+}
+
+@keyframes sheetfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.sheet-fade { animation: sheetfade 0.55s ease both; }
+
+/* floating idle bob for the 3D dossier */
+@keyframes floatz {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+.float-z { animation: floatz 5.5s ease-in-out infinite; }
 .roc-area {
   clip-path: inset(0 100% 0 0);
   animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
