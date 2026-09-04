@@ -7,9 +7,9 @@
 export const DOC_META = {
   code: "DT-CIS",
   docNo: "DT-CIS-SD-001",
-  rev: "REV M",
-  sheet: "13 / 13",
-  phase: "PHASE 13 — EXPLAINABLE AI",
+  rev: "REV N",
+  sheet: "14 / 14",
+  phase: "PHASE 14 — THE DIGITAL TWIN",
   scale: "SCALE N/A",
   prepared: "Prepared by: Student ML Engineer (Final Year)",
   reviewed: "Review: Academic Supervisor",
@@ -319,8 +319,8 @@ export const PHASES: Phase[] = [
   { n: 10, stage: "Intelligence", name: "Recommendation engine", weeks: "done", deliverable: "REV J: frozen recommender rules, honest catalog (free/audit only), live sequence builder, why-not panel.", exit: "Every recommendation cites its shortfall that caused it; nothing recommended is paid or affiliated. PASSED at gate G-10" },
   { n: 11, stage: "Intelligence", name: "NLP resume analyzer", weeks: "done", deliverable: "REV K: frozen extraction pipeline, alias vocabulary v1, confidence protocol with evidence, live deterministic extractor, twin-diff contract.", exit: "No silent guesses; confidence and miss-list always rendered. PASSED at gate G-11" },
   { n: 12, stage: "Intelligence", name: "JD matching", weeks: "done", deliverable: "REV L: frozen matcher math (required 2×/preferred 1×), live JD matcher, skill-normalization reuse, 'match ≠ hiring' contract.", exit: "Match is a fit gauge, never a hiring prediction; disclaimer enforced in UI. PASSED at gate G-12" },
-  { n: 13, stage: "Intelligence", name: "Explainable AI", weeks: "now", deliverable: "REV M: explanation matrix by output type, exact-Shapley live lab on an additive exhibit, XAI limits named, no-explain-no-publish rule.", exit: "Every published score carries a decomposition; SHAP awaits Run 002 by contract ← THIS DOCUMENT, awaiting G-13" },
-  { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "1 wk", deliverable: "Versioned profile store, readiness indicators, progress views.", exit: "Formulas published in-app" },
+  { n: 13, stage: "Intelligence", name: "Explainable AI", weeks: "done", deliverable: "REV M: explanation matrix by output type, exact-Shapley live lab on an additive exhibit, XAI limits named, no-explain-no-publish rule.", exit: "Every published score carries a decomposition; SHAP awaits Run 002 by contract. PASSED at gate G-13" },
+  { n: 14, stage: "Application", name: "Digital Twin & timeline", weeks: "now", deliverable: "REV N: twin constitution (schema + validated write path + correction right), live console with versioned snapshots, five defined readiness indicators, growth timeline.", exit: "Twin stores only REV-D-validated fields; every indicator formula printed in-app ← THIS DOCUMENT, awaiting G-14" },
   { n: 15, stage: "Application", name: "Future simulator", weeks: "0.5 wk", deliverable: "Scenario engine with before/after deltas; never writes to the twin.", exit: "Scenario labeling verified in UI" },
   { n: 16, stage: "Application", name: "Streamlit application", weeks: "1.5 wk", deliverable: "12 pages wired to services; career path graph; advisor.", exit: "Demo script runs end-to-end cold" },
   { n: 17, stage: "Application", name: "Testing", weeks: "1 wk", deliverable: "Data validation, model, UI and edge-case tests; security pass on uploads.", exit: "Suite green; failure modes documented" },
@@ -373,7 +373,8 @@ export const REV_LEDGER = [
   { rev: "REV J", phase: "Phase 10 — Recommendation Engine", status: "APPROVED", tone: "green" as const, note: "Gate G-10 passed. Nothing recommended is paid or affiliated; every plan cites its shortfall and its refusals." },
   { rev: "REV K", phase: "Phase 11 — NLP Resume Intelligence", status: "APPROVED", tone: "green" as const, note: "Gate G-11 passed. Extraction is deterministic and evidence-tagged; the system transcribes claims and refuses to guess." },
   { rev: "REV L", phase: "Phase 12 — Job Matching", status: "APPROVED", tone: "green" as const, note: "Gate G-12 passed. The matcher is a fit gauge with the unknown named — never a hiring forecast. Intelligence stage closed." },
-  { rev: "REV M", phase: "Phase 13 — Explainable AI", status: "ISSUED", tone: "amber" as const, note: "Explanation matrix, exact-Shapley live lab, XAI limits named, no-explain-no-publish rule. Awaiting gate G-13." },
+  { rev: "REV M", phase: "Phase 13 — Explainable AI", status: "APPROVED", tone: "green" as const, note: "Gate G-13 passed. Every output owns exactly one explanation method; SHAP waits for Run 002, and k-means gets none." },
+  { rev: "REV N", phase: "Phase 14 — The Digital Twin", status: "ISSUED", tone: "amber" as const, note: "Twin constitution, live console with versioned snapshots, defined readiness indicators, correction right. Awaiting gate G-14." },
 ];
 
 export type Verdict = "ADOPT" | "CONDITIONAL" | "REJECT" | "BUILD";

@@ -63,17 +63,23 @@ import {
   XaiLimitsSection,
   GateG13Section,
 } from "./components/Phase13";
+import {
+  ConstitutionSection,
+  TwinConsoleSection,
+  WritePathSection,
+  GateG14Section,
+} from "./components/Phase14";
 
-function Footer({ g13 }: { g13: boolean }) {
+function Footer({ g14 }: { g14: boolean }) {
   return (
     <footer className="relative mt-28 border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-3">
         <div>
           <p className="mono-label text-cyan">{DOC_META.docNo} · {DOC_META.rev}</p>
           <p className="mt-2 text-[13px] leading-relaxed text-faint">
-            AI Digital Twin &amp; Career Intelligence System — Phase 13 of 18. A decision-support
-            design document. The Shapley lab in §67 runs exact φ arithmetic on five real features —
-            every bar is a value you can recompute by hand, and SHAP itself waits for Run 002.
+            AI Digital Twin &amp; Career Intelligence System — Phase 14 of 18. A decision-support
+            design document. The twin in §71 derives every indicator from the engines you approved,
+            refuses forbidden writes at the door, and amends — never erases — its history.
           </p>
         </div>
         <div>
@@ -87,8 +93,8 @@ function Footer({ g13 }: { g13: boolean }) {
         </div>
         <div className="md:text-right">
           <p className="mono-label text-faint">Gate status</p>
-          <p className={`mt-2 font-mono text-[12.5px] ${g13 ? "text-green" : "text-amber"}`}>
-            {g13 ? "G-13 PASSED → PHASE 14 (DIGITAL TWIN)" : "G-13 PENDING SUPERVISOR APPROVAL"}
+          <p className={`mt-2 font-mono text-[12.5px] ${g14 ? "text-green" : "text-amber"}`}>
+            {g14 ? "G-14 PASSED → PHASE 15 (FUTURE SIMULATOR)" : "G-14 PENDING SUPERVISOR APPROVAL"}
           </p>
           <a
             href="#top"
@@ -103,9 +109,9 @@ function Footer({ g13 }: { g13: boolean }) {
 }
 
 export default function App() {
-  // Gates G-1 → G-12 are recorded as passed (REV A–L approved).
-  // G-13 is the live decision of this revision.
-  const [g13, setG13] = useState(false);
+  // Gates G-1 → G-13 are recorded as passed (REV A–M approved).
+  // G-14 is the live decision of this revision.
+  const [g14, setG14] = useState(false);
 
   return (
     <div id="top" className="min-h-screen">
@@ -114,8 +120,8 @@ export default function App() {
       <div className="bg-noise" aria-hidden="true" />
       <div className="bg-scan" aria-hidden="true" />
 
-      <Header g13={g13} />
-      <Opener g13={g13} />
+      <Header g14={g14} />
+      <Opener g14={g14} />
 
       <main>
         {/* Phase 1 — System Design */}
@@ -211,10 +217,16 @@ export default function App() {
         <ExplanationMatrixSection />
         <ShapleyLabSection />
         <XaiLimitsSection />
-        <GateG13Section g13={g13} onApprove={() => setG13(true)} />
+        <GateG13Section g13 onApprove={() => undefined} />
+
+        {/* Phase 14 — The Digital Twin */}
+        <ConstitutionSection />
+        <TwinConsoleSection />
+        <WritePathSection />
+        <GateG14Section g14={g14} onApprove={() => setG14(true)} />
       </main>
 
-      <Footer g13={g13} />
+      <Footer g14={g14} />
     </div>
   );
 }
