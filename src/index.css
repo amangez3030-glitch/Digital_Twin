@@ -165,6 +165,24 @@ body {
   from { clip-path: inset(0 100% 0 0); }
   to { clip-path: inset(0 0 0 0); }
 }
+
+/* page transition on route change */
+@keyframes pagein {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.pagein { animation: pagein 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@keyframes shakex {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.shake { animation: shakex 0.45s ease both; }
 .roc-area {
   clip-path: inset(0 100% 0 0);
   animation: rocsweep 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;

@@ -1,13 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DOC_META } from "../data/design";
 import { PAGES, pageByPath } from "../pages/registry";
+import { clearSession, getSession, type SessionUser } from "../lib/auth";
 
-/* ---------- document-wide state (the final seal) ---------- */
+/* ---------- document-wide state (the final seal + workspace session) ---------- */
 
-const DocCtx = createContext<{ sealed: boolean; seal: () => void }>({
+const DocCtx = createContext<{
+  sealed: boolean;
+  seal: () => void;
+  user: SessionUser | null;
+  logout: () => void;
+}>({
   sealed: false,
   seal: () => undefined,
+  user: null,
+  logout: () => undefined,
 });
 
 export const useDoc = () => useContext(DocCtx);
@@ -35,7 +43,7 @@ function CrosshairMark({ className = "h-6 w-6" }: { className?: string }) {
 }
 
 function TopNav() {
-  const { sealed } = useDoc();
+  const { sealed, user, logout } = useDoc();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -72,6 +80,28 @@ function TopNav() {
         >
           {sealed ? "ARCHIVED · 18/18 ✓" : "SEAL PENDING · G-18"}
         </span>
+        {user && (
+          <span className="group flex items-center gap-2 border border-line/80 bg-base/50 py-[3px] pl-2.5 pr-1 transition-colors duration-200 hover:border-cyan/50">
+            <span
+              className={`flex h-4 w-4 items-center justify-center font-mono text-[9px] font-bold ${
+                user.kind === "supervisor" ? "bg-amber/20 text-amber" : "bg-cyan/20 text-cyan"
+              }`}
+            >
+              {user.name.trim().charAt(0).toUpperCase()}
+            </span>
+            <span className="mono-label hidden text-[8.5px] text-dim sm:block">
+              {user.name.split(" ")[0]}
+              <span className="text-faint"> · {user.kind === "supervisor" ? "REVIEW" : "LOCAL"}</span>
+            </span>
+            <button
+              onClick={logout}
+              title="Sign out of the local workspace"
+              className="mono-label border border-line/70 px-1.5 py-[2px] text-[8px] text-faint transition-all duration-200 hover:border-rose/60 hover:text-rose"
+            >
+              OUT
+            </button>
+          </span>
+        )}
       </div>
 
       {/* page rail */}
@@ -267,10 +297,18 @@ function SiteFooter() {
 
 export default function Shell() {
   const [sealed, setSealed] = useState(false);
+  const [user, setUser] = useState<SessionUser | null>(() => getSession());
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    clearSession();
+    setUser(null);
+    navigate("/auth", { replace: true });
+  };
 
   return (
-    <DocCtx.Provider value={{ sealed, seal: () => setSealed(true) }}>
+    <DocCtx.Provider value={{ sealed, seal: () => setSealed(true), user, logout }}>
       <ScrollToTop />
       <div id="top" className="min-h-screen">
         {/* ambient layers */}
