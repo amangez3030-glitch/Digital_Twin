@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getSession } from "../lib/auth";
 import Backplates from "../components/Backplates";
@@ -8,6 +9,9 @@ import { GAP_CAREERS } from "../components/Phase9";
 import { SysDashboard, SysTwin, SysCareers } from "./SysPages1";
 import { SysSkills, SysRoadmap } from "./SysPages2";
 import { SysResume, SysJobs, SysSimulate, SysProgress } from "./SysPages3";
+import { AdvisorPanel, answer, type Msg } from "./Advisor";
+
+const msgTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
 /* ============================================================
    The actual system — the twelve-page product rehearsed in
@@ -25,6 +29,7 @@ const NAV: { id: string; label: string; hint: string; icon: JSX.Element }[] = [
   { id: "jobs", label: "Job Matcher", hint: "JD fit gauge", icon: <><rect x="3" y="8" width="18" height="12" /><path d="M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8M3 13h18" /></> },
   { id: "simulate", label: "Future Simulator", hint: "what-if", icon: <><path d="M9 3h6M10 3v5l-5.5 9A2 2 0 0 0 6.2 20h11.6a2 2 0 0 0 1.7-3L14 8V3" /><path d="M7.5 14h9" /></> },
   { id: "progress", label: "Progress", hint: "timeline", icon: <path d="M3 20h18M5 16l4-5 3 3 5-7 3 4" /> },
+  { id: "advisor", label: "Career Advisor", hint: "ask the twin", icon: <path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-4 3v-3.6A7.5 7.5 0 1 1 21 11.5Z" /> },
 ];
 
 function StatusPill() {
@@ -101,11 +106,39 @@ const TITLES: Record<string, [string, string]> = {
   jobs: ["Job Matcher", "Paste a posting. Required skills weigh double; the result is a fit gauge, never a hiring forecast."],
   simulate: ["Future Simulator", "Perturb a copy of the twin and watch twelve futures recompute — with exact attribution and a label that refuses to call it prophecy."],
   progress: ["Progress", "The timeline the twin earns, one snapshot at a time: skill growth, readiness drift, and portfolio milestones."],
+  advisor: ["Career Advisor", "Ask the twin anything. It answers only from your live profile — decompositions, gaps, sequences, simulations — and refuses to invent what the data can't support."],
 };
 
 function SystemInner({ user }: { user: string }) {
   const { page = "" } = useParams();
   const [title, intro] = TITLES[page] ?? TITLES[""];
+  const { profile } = useSys();
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
+
+  /* the twin's voice — shared by the Advisor page and the floating panel */
+  const [chat, setChat] = useState<Msg[]>([]);
+  const [typing, setTyping] = useState(false);
+  const [panel, setPanel] = useState(false);
+
+  useEffect(() => {
+    if (chat.length === 0) {
+      const hello = answer("hello", profileRef.current, user);
+      setChat([{ role: "twin", text: hello.text, chips: hello.chips, ts: msgTime() }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const send = (text: string) => {
+    if (page !== "advisor") setPanel(true);
+    setChat((c) => [...c, { role: "user", text, ts: msgTime() }]);
+    setTyping(true);
+    window.setTimeout(() => {
+      const reply = answer(text, profileRef.current, user);
+      setChat((c) => [...c, { role: "twin", text: reply.text, chips: reply.chips, ts: msgTime() }]);
+      setTyping(false);
+    }, 550 + Math.random() * 500);
+  };
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[1400px] flex-col lg:flex-row">
@@ -130,9 +163,70 @@ function SystemInner({ user }: { user: string }) {
           {page === "jobs" && <SysJobs />}
           {page === "simulate" && <SysSimulate />}
           {page === "progress" && <SysProgress />}
+          {page === "advisor" && (
+            <div className="h-[calc(100vh-230px)] min-h-[460px]">
+              <AdvisorPanel messages={chat} typing={typing} send={send} variant="page" />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* the twin listens from every page */}
+      {page !== "advisor" && (
+        <>
+          <button
+            onClick={() => setPanel(true)}
+            className="group fixed bottom-5 right-5 z-[70] flex items-center gap-2.5 border border-cyan bg-[#0a1626]/95 px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan/15 hover:shadow-[0_0_30px_rgba(107,225,255,0.25)] active:translate-y-0"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
+            </span>
+            <span className="mono-label text-[9.5px] text-cyan">ASK THE TWIN</span>
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-cyan transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <path d="M2 8h11M9 3.5 13.5 8 9 12.5" />
+            </svg>
+          </button>
+
+          {panel && (
+            <div className="fixed inset-0 z-[80]">
+              <div className="absolute inset-0 bg-black/55" onClick={() => setPanel(false)} />
+              <div className="panelin absolute inset-y-0 right-0 flex w-full max-w-[430px] flex-col border-l border-line bg-[#0a1424]/97">
+                <div className="flex items-center gap-3 border-b border-line px-4 py-3.5">
+                  <CrosshairMini />
+                  <div>
+                    <p className="mono-label text-[9.5px] text-cyan">CAREER ADVISOR</p>
+                    <p className="font-mono text-[8.5px] text-faint">reads your live twin · answers, never invents</p>
+                  </div>
+                  <button
+                    onClick={() => setPanel(false)}
+                    aria-label="Close advisor panel"
+                    className="ml-auto flex h-8 w-8 items-center justify-center border border-line text-faint transition-colors hover:border-rose hover:text-rose"
+                  >
+                    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="min-h-0 flex-1">
+                  <AdvisorPanel messages={chat} typing={typing} send={send} variant="overlay" onClose={() => setPanel(false)} />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
+  );
+}
+
+function CrosshairMini() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0 text-cyan" fill="none" stroke="currentColor" strokeWidth="1.4">
+      <rect x="3.5" y="3.5" width="17" height="17" />
+      <path d="M12 1.5v5M12 17.5v5M1.5 12h5M17.5 12h5" strokeWidth="1.1" />
+      <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none" />
+    </svg>
   );
 }
 

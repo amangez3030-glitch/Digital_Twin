@@ -174,6 +174,7 @@ export const SYS_LINKS: { path: string; label: string }[] = [
   { path: "/system/jobs", label: "Job Matcher" },
   { path: "/system/simulate", label: "Future Simulator" },
   { path: "/system/progress", label: "Progress" },
+  { path: "/system/advisor", label: "Career Advisor" },
 ];
 
 /* Sidebar grouping — the sheet index of the dossier. */
