@@ -217,6 +217,33 @@ body {
 }
 .panelin { animation: panelin 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* twin pulse ECG trace */
+@keyframes ecgrun {
+  from { stroke-dashoffset: 280; }
+  to { stroke-dashoffset: 0; }
+}
+.ecg-path { animation: ecgrun 2.6s linear infinite; }
+
+@keyframes toastin {
+  from { opacity: 0; transform: translateX(-16px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.toastin { animation: toastin 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* konami overclock — cosmetic glow only, the math never changes */
+body.overclock::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  box-shadow: inset 0 0 160px rgba(107, 225, 255, 0.14);
+  animation: ocpulse 2.4s ease-in-out infinite;
+}
+@keyframes ocpulse {
+  50% { box-shadow: inset 0 0 200px rgba(255, 194, 102, 0.12); }
+}
+
 /* ---------- cinematic backplates ---------- */
 .backplate-layer {
   position: fixed;

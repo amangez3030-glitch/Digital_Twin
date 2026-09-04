@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSys, analyzeResume, analyzeJob, readinessFor, coverageFor, acadFor, interestFitFor, sysGaps } from "./profile";
+import { trackEvent } from "./Insights";
 import { GAP_SKILLS, GAP_CAREERS } from "../components/Phase9";
 import { Reveal, Tag, Corners } from "../components/ui";
 
@@ -32,6 +33,7 @@ export function SysResume() {
   const analyze = () => {
     setBusy(true);
     setRunId(0);
+    trackEvent("resume");
     window.setTimeout(() => { setRunId((r) => r + 1); setBusy(false); }, 700);
   };
 
@@ -166,6 +168,7 @@ export function SysJobs() {
   const analyze = () => {
     setBusy(true);
     setRunId(0);
+    trackEvent("jd");
     window.setTimeout(() => { setRunId((r) => r + 1); setBusy(false); }, 600);
   };
 
@@ -295,6 +298,7 @@ export function SysSimulate() {
   const { profile } = useSys();
   const [after, setAfter] = useState<Record<string, number>>({ ...profile.skills });
   const [sortBy, setSortBy] = useState<"after" | "delta">("delta");
+  const [journaled, setJournaled] = useState(false);
 
   const changed = GAP_SKILLS.filter((s) => after[s.id] !== profile.skills[s.id]);
   const effort = changed.reduce((sum, s) => {
@@ -333,6 +337,15 @@ export function SysSimulate() {
         <div className="flex flex-wrap items-center gap-3 border border-rose/50 bg-rose/[0.05] px-4 py-3">
           <Tag tone="rose">SCENARIO SIMULATION</Tag>
           <p className="mono-label text-[9px] text-rose/90">NOT A PREDICTION OF YOUR FUTURE — a read-only replay of approved engines; the twin is never written to (§74 S-3)</p>
+          <button
+            onClick={() => { trackEvent("sim"); setJournaled(true); window.setTimeout(() => setJournaled(false), 1400); }}
+            disabled={changed.length === 0}
+            className={`mono-label ml-auto border px-3 py-1.5 text-[8.5px] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-35 ${
+              journaled ? "border-green bg-green/15 text-green" : "border-amber/60 text-amber hover:bg-amber/10"
+            }`}
+          >
+            {journaled ? "✓ JOURNALED — REFLECTION, NOT DATA" : "JOURNAL THIS SCENARIO"}
+          </button>
         </div>
       </Reveal>
 

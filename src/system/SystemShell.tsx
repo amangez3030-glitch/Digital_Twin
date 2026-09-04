@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getSession } from "../lib/auth";
 import Backplates from "../components/Backplates";
 import VideoBackdrop from "../components/VideoBackdrop";
@@ -9,6 +9,7 @@ import { GAP_CAREERS } from "../components/Phase9";
 import { SysDashboard, SysTwin, SysCareers } from "./SysPages1";
 import { SysSkills, SysRoadmap } from "./SysPages2";
 import { SysResume, SysJobs, SysSimulate, SysProgress } from "./SysPages3";
+import { MilestoneProvider, InsightTicker, MilestoneStrip, trackEvent, useToast } from "./Insights";
 import { AdvisorPanel, answer, type Msg } from "./Advisor";
 
 const msgTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -131,6 +132,7 @@ function SystemInner({ user }: { user: string }) {
 
   const send = (text: string) => {
     if (page !== "advisor") setPanel(true);
+    trackEvent("ask");
     setChat((c) => [...c, { role: "user", text, ts: msgTime() }]);
     setTyping(true);
     window.setTimeout(() => {
@@ -139,6 +141,19 @@ function SystemInner({ user }: { user: string }) {
       setTyping(false);
     }, 550 + Math.random() * 500);
   };
+
+  /* ⌘K / Ctrl+K anywhere in the system */
+  const [palette, setPalette] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPalette((p) => !p);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[1400px] flex-col lg:flex-row">
@@ -150,11 +165,28 @@ function SystemInner({ user }: { user: string }) {
             <h1 className="display-head mt-1.5 text-3xl text-ink sm:text-4xl">{title}</h1>
             <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-dim">{intro}</p>
           </div>
-          <StatusPill />
+          <div className="flex items-center gap-2.5">
+            <StatusPill />
+            <button
+              onClick={() => setPalette(true)}
+              title="Command palette"
+              className="mono-label hidden border border-line/80 bg-base/50 px-2.5 py-1.5 text-[8.5px] text-dim transition-all duration-200 hover:border-cyan/60 hover:text-cyan sm:block"
+            >
+              ⌘K
+            </button>
+          </div>
         </div>
 
         <div key={page} className="pagein">
-          {page === "" && <SysDashboard user={user} />}
+          {page === "" && (
+            <>
+              <InsightTicker />
+              <SysDashboard user={user} />
+              <div className="mt-5">
+                <MilestoneStrip />
+              </div>
+            </>
+          )}
           {page === "twin" && <SysTwin />}
           {page === "careers" && <SysCareers />}
           {page === "skills" && <SysSkills />}
@@ -216,6 +248,8 @@ function SystemInner({ user }: { user: string }) {
           )}
         </>
       )}
+
+      <CommandPalette open={palette} onClose={() => setPalette(false)} send={send} />
     </div>
   );
 }
@@ -230,20 +264,139 @@ function CrosshairMini() {
   );
 }
 
+/* ---------- ⌘K command palette ---------- */
+
+function CommandPalette({ open, onClose, send }: { open: boolean; onClose: () => void; send: (t: string) => void }) {
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+
+  const items = useMemo(() => {
+    const pages = NAV.map((n) => ({
+      kind: "page" as const,
+      label: n.label,
+      sub: n.hint,
+      run: () => navigate(n.id ? `/system/${n.id}` : "/system"),
+    }));
+    const asks = [
+      "What should I learn next?",
+      "Why is my top career recommended?",
+      "If I improve SQL by 20, what changes?",
+      "What am I missing for my target?",
+    ].map((t) => ({
+      kind: "ask" as const,
+      label: `Ask the twin — “${t}”`,
+      sub: "career advisor",
+      run: () => send(t),
+    }));
+    const all = [...pages, { kind: "page" as const, label: "Design Dossier", sub: "the explanation", run: () => navigate("/") }, ...asks];
+    const needle = q.trim().toLowerCase();
+    return needle ? all.filter((i) => i.label.toLowerCase().includes(needle)) : all;
+  }, [q, navigate, send]);
+
+  useEffect(() => {
+    if (open) setQ("");
+  }, [open]);
+
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[85] flex items-start justify-center px-4 pt-[14vh]">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="msgin relative w-full max-w-[520px] border border-cyan/40 bg-[#0a1424]/98 shadow-[0_0_60px_rgba(107,225,255,0.12)]">
+        <div className="flex items-center gap-2.5 border-b border-line px-4 py-3">
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-cyan" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <circle cx="7" cy="7" r="4.5" />
+            <path d="M10.5 10.5 14 14" />
+          </svg>
+          <input
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && items[0]) {
+                items[0].run();
+                onClose();
+              }
+              if (e.key === "Escape") onClose();
+            }}
+            placeholder="Jump to a page, or ask the twin…"
+            className="w-full bg-transparent font-mono text-[13px] text-ink outline-none placeholder:text-faint/60"
+          />
+          <span className="mono-label shrink-0 border border-line px-1.5 py-0.5 text-[7.5px] text-faint">ESC</span>
+        </div>
+        <div className="max-h-[46vh] overflow-y-auto p-1.5">
+          {items.length === 0 && (
+            <p className="px-3 py-4 font-mono text-[11px] text-faint">Nothing matches — the twin suggests fewer letters.</p>
+          )}
+          {items.slice(0, 9).map((i, idx) => (
+            <button
+              key={i.label}
+              onClick={() => {
+                i.run();
+                onClose();
+              }}
+              className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors ${
+                idx === 0 ? "bg-cyan/[0.08]" : "hover:bg-cyan/[0.05]"
+              }`}
+            >
+              <span className={`mono-label text-[8px] ${i.kind === "ask" ? "text-amber" : "text-cyan"}`}>
+                {i.kind === "ask" ? "ASK" : "GO"}
+              </span>
+              <span className="mono-label flex-1 text-[10px] text-dim">{i.label}</span>
+              <span className="mono-label text-[7.5px] text-faint">{i.sub.toUpperCase()}</span>
+            </button>
+          ))}
+        </div>
+        <p className="border-t border-line px-4 py-2 font-mono text-[8.5px] text-faint">
+          ⌘K anywhere in the system · Enter runs the highlighted line
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- the hidden handshake ---------- */
+
+const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+
+function Konami() {
+  const toast = useToast();
+  const buf = useRef<string[]>([]);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      buf.current = [...buf.current.slice(-9), e.key.length === 1 ? e.key.toLowerCase() : e.key];
+      if (KONAMI.every((k, i) => buf.current[buf.current.length - KONAMI.length + i] === k)) {
+        document.body.classList.toggle("overclock");
+        const on = document.body.classList.contains("overclock");
+        toast(
+          on ? "TWIN OVERCLOCKED" : "TWIN RETURNED TO SPEC",
+          on ? "Ambient field at 120%. Cosmetic only — the math never changes." : "Back to factory settings. The math never changed."
+        );
+        buf.current = [];
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [toast]);
+  return null;
+}
+
 export default function SystemShell() {
   const user = getSession()?.name ?? "Student";
   return (
     <SysProvider>
-      <div className="relative min-h-screen">
-        {/* ambient layers — hologram plate, video streams, 3D constellation */}
-        <div className="bg-blueprint" aria-hidden="true" />
-        <Backplates path="/system" />
-        <VideoBackdrop />
-        <ParticleField />
-        <div className="bg-scan" aria-hidden="true" />
-        <div className="bg-noise" aria-hidden="true" />
-        <SystemInner user={user} />
-      </div>
+      <MilestoneProvider>
+        <div className="relative min-h-screen">
+          {/* ambient layers — hologram plate, video streams, 3D constellation */}
+          <div className="bg-blueprint" aria-hidden="true" />
+          <Backplates path="/system" />
+          <VideoBackdrop />
+          <ParticleField />
+          <div className="bg-scan" aria-hidden="true" />
+          <div className="bg-noise" aria-hidden="true" />
+          <SystemInner user={user} />
+          <Konami />
+        </div>
+      </MilestoneProvider>
     </SysProvider>
   );
 }
